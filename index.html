@@ -271,7 +271,7 @@ header {
 .color-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.1rem; }
 .color-dot {
   width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-  border: 2.5px solid t<ransparent;
+  border: 2.5px solid transparent;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
@@ -411,29 +411,44 @@ header {
 .map-node:hover .node-del-btn,
 .map-node.selected .node-del-btn { display: flex; }
 
-/* ===================== SVG EDGES — NOIR ===================== */
+/* ===================== SVG EDGES ===================== */
 #edges-svg {
   position: absolute; top: 0; left: 0;
   width: 8000px; height: 8000px;
-  pointer-events: none; overflow: visible;
+  /* CORRECTION CRITIQUE : pointer-events doit être "all" et non "none"
+     pour que les clics/survols/clic-droit fonctionnent sur les traits */
+  pointer-events: all;
+  overflow: visible;
 }
 
-/* Trait noir, légèrement épais */
+/* Zone de clic invisible large (pour faciliter le clic sur la ligne fine) */
+.edge-hitarea {
+  stroke: transparent;
+  stroke-width: 18;
+  fill: none;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+/* Trait visible */
 .edge-line {
   stroke: #1a1208;
   stroke-width: 2;
   fill: none;
-  pointer-events: stroke;
-  cursor: pointer;
-  transition: stroke-width 0.15s, opacity 0.15s;
-  opacity: 0.65;
+  pointer-events: none; /* le hitarea gère les clics */
+  opacity: 0.7;
+  transition: opacity 0.15s, stroke-width 0.15s;
 }
-.edge-line:hover { stroke-width: 3; opacity: 1; }
-  .edge-line {
-  stroke-width: 2;
-  opacity: 0.65;
+.edge-line.selected {
+  stroke-width: 3;
+  opacity: 1;
 }
-.edge-line.selected { stroke-width: 3; opacity: 1; }
+
+/* Quand le groupe est survolé, le trait s'épaissit */
+.edge-group:hover .edge-line {
+  stroke-width: 3;
+  opacity: 1;
+}
 
 /* Prévisualisation en pointillés bleus */
 .edge-preview {
@@ -441,32 +456,7 @@ header {
   stroke-width: 1.5;
   stroke-dasharray: 7 4;
   fill: none;
-}
-
-/* Badge type de lien */
-.edge-badge-fo { pointer-events: none; overflow: visible; }
-.edge-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: #1a1208; color: #f5f0e8;
-  border-radius: 99px; padding: 3px 10px 3px 7px;
-  font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 400;
-  white-space: nowrap; letter-spacing: 0.02em;
-  cursor: pointer; pointer-events: all;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.22);
-  transition: background 0.15s, transform 0.15s;
-  user-select: none;
-}
-.edge-badge:hover { background: #3a2e1a; transform: scale(1.05); }
-.edge-badge .badge-icon {
-  width: 14px; height: 14px; border-radius: 50%;
-  background: rgba(255,255,255,0.18);
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 8px; flex-shrink: 0;
-}
-.edge-badge.no-label {
-  background: rgba(26,18,8,0.55);
-  color: rgba(245,240,232,0.75);
-  font-style: italic;
+  pointer-events: none;
 }
 
 /* Drop hint */
@@ -513,7 +503,7 @@ header {
 .edge-menu-item.danger { color: var(--danger); }
 .edge-menu-item.danger:hover { background: var(--danger-light); }
 
-/* Label popup — amélioré avec sélection rapide de types */
+/* Label popup */
 #label-popup {
   position: fixed; background: var(--surface);
   border: 1px solid var(--border2); border-radius: var(--radius-sm);
@@ -531,10 +521,7 @@ header {
 }
 #label-input:focus { border-color: var(--accent); }
 
-/* Suggestions rapides de types */
-.label-suggestions {
-  display: flex; flex-wrap: wrap; gap: 6px;
-}
+.label-suggestions { display: flex; flex-wrap: wrap; gap: 6px; }
 .label-chip {
   background: var(--bg2); border: 1px solid var(--border2);
   border-radius: 99px; padding: 4px 11px;
@@ -689,7 +676,7 @@ header {
   </div>
 </div>
 
-<!-- Label popup — avec suggestions rapides -->
+<!-- Label popup -->
 <div id="label-popup">
   <label>Type de lien</label>
   <div class="label-suggestions">
@@ -712,9 +699,6 @@ header {
 <div id="toast"></div>
 
 <script>
-// ============================================================
-// CONFIG
-// ============================================================
 const SUPABASE_URL = 'https://mddaurbgpodxdysemvnc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZGF1cmJncG9keGR5c2Vtdm5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NTM1MzMsImV4cCI6MjA5NDUyOTUzM30.DhBLw9SXbO-vWw-_PVwHlpiIxGY5-DcDhihXDtfqFn4';
 const PASSWORD = 'roman2024';
@@ -729,7 +713,6 @@ const COLORS = [
   { bg:'#e4f0e0', text:'#2a4a1a', accent:'#4a7a2a', label:'mousse' },
 ];
 
-// Icônes associées aux types de liens courants
 const LINK_ICONS = {
   'amis': '🤝', 'ennemis': '⚔️', 'rivaux': '🔥', 'amoureux': '❤️',
   'frère': '👫', 'sœur': '👫', 'frère / sœur': '👫',
@@ -746,9 +729,6 @@ function getLinkIcon(label) {
   return '•';
 }
 
-// ============================================================
-// STATE
-// ============================================================
 let characters = [];
 let isEditor = false;
 let currentEditColor = 0;
@@ -763,9 +743,6 @@ let linkSource = null, previewLine = null;
 let selectedEdgeId = null, edgeMenuTargetId = null;
 let pendingEdgeFrom = null, pendingEdgeTo = null, editingEdgeId = null;
 
-// ============================================================
-// TOAST
-// ============================================================
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -775,9 +752,6 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-// ============================================================
-// API
-// ============================================================
 function api(path, method = 'GET', body = null) {
   const opts = {
     method,
@@ -792,9 +766,6 @@ function api(path, method = 'GET', body = null) {
   return fetch(SUPABASE_URL + '/rest/v1/' + path, opts).then(r => r.json());
 }
 
-// ============================================================
-// CHARACTERS
-// ============================================================
 async function loadCharacters() {
   const data = await api('personnages?order=created_at.asc');
   characters = Array.isArray(data) ? data : [];
@@ -947,38 +918,22 @@ async function saveChar(id) {
   closeModal(); renderGrid(); renderSidebar();
 }
 
-// ===================== SUPPRESSION INSTANTANÉE =====================
 async function deleteChar(id) {
-  // Ferme la modal immédiatement
   closeModal();
-
-  // Retire le perso du state local tout de suite (pas de rechargement)
   characters = characters.filter(c => c.id !== id);
-
-  // Retire les nœuds de carte liés à ce perso
   const removedNodeIds = mapNodes.filter(n => n.charId === id).map(n => n.id);
   mapNodes = mapNodes.filter(n => n.charId !== id);
   mapEdges = mapEdges.filter(e => !removedNodeIds.includes(e.from) && !removedNodeIds.includes(e.to));
-
-  // Rafraîchit la grille et la sidebar sans rechargement
   renderGrid();
   renderSidebar();
-  if (document.getElementById('map-screen').classList.contains('open')) {
-    renderMapFull();
-  }
-
+  if (document.getElementById('map-screen').classList.contains('open')) renderMapFull();
   showToast('Personnage supprimé');
-
-  // Suppression en base en arrière-plan
   await api(`personnages?id=eq.${id}`, 'DELETE');
 }
 
 function closeModal() { document.getElementById('overlay').classList.remove('open'); }
 function closeOverlay(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
 
-// ============================================================
-// MAP — OPEN / CLOSE / DATA
-// ============================================================
 async function openMap() {
   document.getElementById('map-screen').classList.add('open');
   await loadMapData();
@@ -1005,9 +960,6 @@ function saveMap() {
 
 function genId() { return Math.random().toString(36).slice(2, 10); }
 
-// ============================================================
-// MAP — SIDEBAR
-// ============================================================
 function renderSidebar() {
   const list = document.getElementById('sidebar-list');
   if (!list) return;
@@ -1029,9 +981,6 @@ function renderSidebar() {
   });
 }
 
-// ============================================================
-// MAP — DROP
-// ============================================================
 const canvasWrap = document.getElementById('map-canvas-wrap');
 canvasWrap.addEventListener('dragover', e => {
   e.preventDefault();
@@ -1051,9 +1000,6 @@ canvasWrap.addEventListener('drop', e => {
   showToast('✓ Personnage ajouté à la carte');
 });
 
-// ============================================================
-// MAP — VIEW
-// ============================================================
 function applyTransform() {
   document.getElementById('map-world').style.transform = `translate(${viewX}px,${viewY}px) scale(${viewScale})`;
   document.getElementById('zoom-display').textContent = Math.round(viewScale * 100) + '%';
@@ -1078,9 +1024,6 @@ canvasWrap.addEventListener('wheel', e => {
   zoomBy(e.deltaY > 0 ? -0.1 : 0.1, e.clientX, e.clientY);
 }, { passive: false });
 
-// ============================================================
-// MAP — PAN
-// ============================================================
 canvasWrap.addEventListener('mousedown', e => {
   closeEdgeMenu();
   if (mapTool === 'pan' || spaceDown) {
@@ -1125,9 +1068,6 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keyup', e => { if (e.code === 'Space') spaceDown = false; });
 
-// ============================================================
-// MAP — TOOL
-// ============================================================
 function setTool(t) {
   mapTool = t;
   cancelLink();
@@ -1137,9 +1077,6 @@ function setTool(t) {
   canvasWrap.classList.toggle('linking', t === 'link');
 }
 
-// ============================================================
-// MAP — RENDER
-// ============================================================
 function renderMapFull() { renderNodes(); renderEdges(); }
 
 function renderNodes() {
@@ -1213,7 +1150,9 @@ function cancelLink() {
 }
 
 // ============================================================
-// RENDER EDGES — traits noirs + badges SVG natifs
+// RENDER EDGES — correction complète
+// La clé : hitarea transparent large pour capter les clics,
+// trait visible séparé, pointer-events sur le SVG activés.
 // ============================================================
 function renderEdges() {
   const svg = document.getElementById('edges-svg');
@@ -1228,55 +1167,64 @@ function renderEdges() {
     g.setAttribute('class', 'edge-group');
     g.dataset.edgeId = edge.id;
 
-    // Point de contrôle pour la courbe
     const mx = (fn.x + tn.x) / 2, my = (fn.y + tn.y) / 2;
     const dx = tn.x - fn.x, dy = tn.y - fn.y;
     const len = Math.sqrt(dx*dx + dy*dy) || 1;
     const off = Math.min(len * 0.12, 35);
     const cpx = mx - dy/len * off, cpy = my + dx/len * off;
+    const pathD = `M${fn.x},${fn.y} Q${cpx},${cpy} ${tn.x},${tn.y}`;
 
-    // ── Trait noir ──
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('class', 'edge-line' + (selectedEdgeId === edge.id ? ' selected' : ''));
-    path.setAttribute('d', `M${fn.x},${fn.y} Q${cpx},${cpy} ${tn.x},${tn.y}`);
-    path.addEventListener('click', e => { e.stopPropagation(); selectedEdgeId = edge.id; renderEdges(); });
-    path.addEventListener('contextmenu', e => {
-      e.preventDefault(); e.stopPropagation();
-      selectedEdgeId = edge.id; renderEdges();
+    // ── Zone de clic invisible large (18px) — capte les événements ──
+    const hitarea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    hitarea.setAttribute('class', 'edge-hitarea');
+    hitarea.setAttribute('d', pathD);
+    hitarea.addEventListener('click', e => {
+      e.stopPropagation();
+      selectedEdgeId = edge.id;
+      renderEdges();
+    });
+    hitarea.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      selectedEdgeId = edge.id;
+      renderEdges();
       openEdgeMenu(e.clientX, e.clientY, edge.id);
     });
+    g.appendChild(hitarea);
+
+    // ── Trait visible ──
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('class', 'edge-line' + (selectedEdgeId === edge.id ? ' selected' : ''));
+    path.setAttribute('d', pathD);
     g.appendChild(path);
 
-    // ── Badge SVG natif (pas de foreignObject) ──
+    // ── Badge SVG ──
     const icon = getLinkIcon(edge.label);
-    const badgeText = (edge.label || 'Lien');
+    const badgeText = edge.label || 'Lien';
     const hasLabel = !!edge.label;
-
-    // Fond de la pastille
-    const padX = 10, padY = 5, r = 10;
-    // On estime la largeur du texte (icône ~14px + texte ~7px/char)
     const textW = badgeText.length * 6.8 + 22;
-    const bw = textW + padX * 2;
+    const bw = textW + 20;
     const bh = 22;
     const bx = cpx - bw / 2;
     const by = cpy - bh / 2;
 
-    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    rect.setAttribute('x', bx);
-    rect.setAttribute('y', by);
-    rect.setAttribute('width', bw);
-    rect.setAttribute('height', bh);
-    rect.setAttribute('rx', r);
-    rect.setAttribute('ry', r);
-    rect.setAttribute('fill', hasLabel ? '#1a1208' : 'rgba(26,18,8,0.5)');
-    rect.style.cursor = 'pointer';
-    rect.addEventListener('click', e => { e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
-    rect.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
-    g.appendChild(rect);
+    // Fond de badge cliquable
+    const badgeRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    badgeRect.setAttribute('x', bx);
+    badgeRect.setAttribute('y', by);
+    badgeRect.setAttribute('width', bw);
+    badgeRect.setAttribute('height', bh);
+    badgeRect.setAttribute('rx', 10);
+    badgeRect.setAttribute('ry', 10);
+    badgeRect.setAttribute('fill', hasLabel ? '#1a1208' : 'rgba(26,18,8,0.5)');
+    badgeRect.style.cursor = 'pointer';
+    badgeRect.addEventListener('click', e => { e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
+    badgeRect.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
+    g.appendChild(badgeRect);
 
-    // Icône emoji
+    // Icône
     const iconEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    iconEl.setAttribute('x', bx + padX);
+    iconEl.setAttribute('x', bx + 10);
     iconEl.setAttribute('y', cpy + 5);
     iconEl.setAttribute('font-size', '11');
     iconEl.setAttribute('dominant-baseline', 'middle');
@@ -1284,9 +1232,9 @@ function renderEdges() {
     iconEl.style.pointerEvents = 'none';
     g.appendChild(iconEl);
 
-    // Texte du type
+    // Texte
     const labelEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    labelEl.setAttribute('x', bx + padX + 16);
+    labelEl.setAttribute('x', bx + 26);
     labelEl.setAttribute('y', cpy + 1);
     labelEl.setAttribute('fill', hasLabel ? '#f5f0e8' : 'rgba(245,240,232,0.7)');
     labelEl.setAttribute('font-size', '11');
@@ -1301,14 +1249,11 @@ function renderEdges() {
   });
 }
 
-// ============================================================
-// EDGE MENU
-// ============================================================
-function openEdgeMenu(x, y, edgeId, e) {
-  if (e) { e.stopPropagation(); e.preventDefault(); }
+function openEdgeMenu(x, y, edgeId) {
   edgeMenuTargetId = edgeId;
   const menu = document.getElementById('edge-menu');
-  menu.style.left = x + 'px'; menu.style.top = y + 'px';
+  menu.style.left = x + 'px';
+  menu.style.top = y + 'px';
   menu.classList.add('open');
 }
 function closeEdgeMenu() { document.getElementById('edge-menu').classList.remove('open'); edgeMenuTargetId = null; }
@@ -1327,9 +1272,6 @@ document.addEventListener('click', e => {
   if (!document.getElementById('edge-menu').contains(e.target)) closeEdgeMenu();
 });
 
-// ============================================================
-// LABEL POPUP — avec suggestions rapides
-// ============================================================
 function pickChip(value) {
   document.getElementById('label-input').value = value;
   document.getElementById('label-input').focus();
@@ -1366,16 +1308,13 @@ function confirmLabel() {
     mapEdges.push({ id: genId(), from: pendingEdgeFrom, to: pendingEdgeTo, label });
   }
   closeLabelPopup(); renderEdges();
-  showToast('✓ Lien créé');
+  showToast('✓ Lien enregistré');
 }
 document.getElementById('label-input').addEventListener('keydown', e => {
   if (e.key === 'Enter') confirmLabel();
   if (e.key === 'Escape') closeLabelPopup();
 });
 
-// ============================================================
-// AUTH
-// ============================================================
 function checkGate() {
   const pw = document.getElementById('gate-pw').value;
   if (pw === PASSWORD) { isEditor = true; enterApp(); }
