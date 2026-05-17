@@ -271,7 +271,7 @@ header {
 .color-picker { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 1.1rem; }
 .color-dot {
   width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-  border: 2.5px solid transparent;
+  border: 2.5px solid t<ransparent;
   transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
   box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
@@ -422,11 +422,11 @@ header {
 .edge-line {
   stroke: #1a1208;
   stroke-width: 2;
-  fill: none;
+  fill: none;<
   pointer-events: stroke;
   cursor: pointer;
   transition: stroke-width 0.15s, opacity 0.15s;
-  opacity: 0.75;
+  opacity: 0.05;
 }
 .edge-line:hover { stroke-width: 3; opacity: 1; }
 .edge-line.selected { stroke-width: 3; opacity: 1; }
