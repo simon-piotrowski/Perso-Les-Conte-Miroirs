@@ -1203,12 +1203,13 @@ function renderEdges() {
     const badgeText = edge.label || 'Lien';
     const hasLabel = !!edge.label;
     const textW = badgeText.length * 6.8 + 22;
-    const bw = textW + 20;
+    // Espace supplémentaire à droite pour le bouton ✕ (18px)
+    const bw = textW + 20 + 18;
     const bh = 22;
     const bx = cpx - bw / 2;
     const by = cpy - bh / 2;
 
-    // Fond de badge cliquable
+    // Fond de badge — clic pour modifier le type
     const badgeRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
     badgeRect.setAttribute('x', bx);
     badgeRect.setAttribute('y', by);
@@ -1218,11 +1219,14 @@ function renderEdges() {
     badgeRect.setAttribute('ry', 10);
     badgeRect.setAttribute('fill', hasLabel ? '#1a1208' : 'rgba(26,18,8,0.5)');
     badgeRect.style.cursor = 'pointer';
-    badgeRect.addEventListener('click', e => { e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
-    badgeRect.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
+    badgeRect.addEventListener('click', e => {
+      e.stopPropagation();
+      const ed = mapEdges.find(x => x.id === edge.id);
+      if (ed) openLabelPopupEdit(ed);
+    });
     g.appendChild(badgeRect);
 
-    // Icône
+    // Icône emoji
     const iconEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     iconEl.setAttribute('x', bx + 10);
     iconEl.setAttribute('y', cpy + 5);
@@ -1232,7 +1236,7 @@ function renderEdges() {
     iconEl.style.pointerEvents = 'none';
     g.appendChild(iconEl);
 
-    // Texte
+    // Texte du label
     const labelEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     labelEl.setAttribute('x', bx + 26);
     labelEl.setAttribute('y', cpy + 1);
@@ -1244,6 +1248,39 @@ function renderEdges() {
     labelEl.textContent = badgeText;
     labelEl.style.pointerEvents = 'none';
     g.appendChild(labelEl);
+
+    // ── Bouton ✕ pour supprimer le lien ──
+    const xR = 8; // rayon du cercle
+    const xCx = bx + bw - 12; // centre X du cercle (coin droit du badge)
+    const xCy = cpy;           // centre Y
+
+    const xCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    xCircle.setAttribute('cx', xCx);
+    xCircle.setAttribute('cy', xCy);
+    xCircle.setAttribute('r', xR);
+    xCircle.setAttribute('fill', 'rgba(176,90,90,0.85)');
+    xCircle.style.cursor = 'pointer';
+    xCircle.addEventListener('click', e => {
+      e.stopPropagation();
+      mapEdges = mapEdges.filter(x => x.id !== edge.id);
+      if (selectedEdgeId === edge.id) selectedEdgeId = null;
+      renderEdges();
+      showToast('Lien supprimé');
+    });
+    g.appendChild(xCircle);
+
+    const xText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    xText.setAttribute('x', xCx);
+    xText.setAttribute('y', xCy + 1);
+    xText.setAttribute('text-anchor', 'middle');
+    xText.setAttribute('dominant-baseline', 'middle');
+    xText.setAttribute('fill', '#fff');
+    xText.setAttribute('font-size', '9');
+    xText.setAttribute('font-family', 'Jost, sans-serif');
+    xText.setAttribute('font-weight', '600');
+    xText.textContent = '✕';
+    xText.style.pointerEvents = 'none';
+    g.appendChild(xText);
 
     svg.appendChild(g);
   });
