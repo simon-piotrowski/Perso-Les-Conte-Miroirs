@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Les Personnages Contes Miroirs</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -44,12 +44,6 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
   background-repeat: repeat;
 }
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  pointer-events: none; z-index: 0; opacity: 0.55;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.9' numOctaves='1'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-}
 
 #gate, #app, #map-screen { position: relative; z-index: 1; }
 
@@ -58,7 +52,7 @@ body::after {
   position: fixed; inset: 0; background: var(--bg);
   display: flex; align-items: center; justify-content: center;
   z-index: 200; flex-direction: column; gap: 1.4rem;
-  animation: fadeIn 0.5s ease;
+  animation: fadeIn 0.5s ease; padding: 1rem;
 }
 .gate-deco {
   width: 62px; height: 62px; border-radius: 50%;
@@ -66,12 +60,9 @@ body::after {
   display: flex; align-items: center; justify-content: center;
   color: var(--accent); background: var(--surface); box-shadow: var(--shadow);
 }
-#gate h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 28px; font-weight: 400; color: var(--text);
-}
+#gate h2 { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; color: var(--text); }
 #gate > p { color: var(--text2); font-size: 14px; text-align: center; font-weight: 300; line-height: 1.7; }
-#gate-form { display: flex; gap: 10px; }
+#gate-form { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 #gate-pw {
   background: var(--surface); border: 1px solid var(--border2);
   border-radius: var(--radius-sm); color: var(--text);
@@ -130,7 +121,7 @@ header {
 .header-eyebrow::before { content: ''; display: inline-block; width: 20px; height: 1px; background: var(--accent); }
 .header-left h1 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(36px, 5vw, 52px); font-weight: 300;
+  font-size: clamp(28px, 5vw, 52px); font-weight: 300;
   color: var(--text); letter-spacing: -0.01em; line-height: 1.05;
 }
 .header-left h1 em { color: var(--accent); font-style: italic; font-weight: 400; }
@@ -155,6 +146,60 @@ header {
 #grid-wrap { max-width: 1200px; margin: 0 auto; padding: 2.5rem; }
 #count { font-size: 12px; color: var(--text3); margin-bottom: 1.75rem; font-weight: 300; letter-spacing: 0.05em; text-transform: uppercase; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px; }
+
+/* ===================== FOLDERS ===================== */
+.folder-section { margin-bottom: 2.5rem; }
+.folder-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--border2);
+}
+.folder-toggle {
+  background: none; border: none; cursor: pointer; color: var(--text2);
+  display: flex; align-items: center; gap: 8px; font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 400; color: var(--text); padding: 0;
+  flex: 1; text-align: left;
+}
+.folder-toggle svg { transition: transform 0.2s; flex-shrink: 0; }
+.folder-toggle.collapsed svg.chevron { transform: rotate(-90deg); }
+.folder-count {
+  font-family: 'Jost', sans-serif; font-size: 11px; color: var(--text3);
+  font-weight: 300; margin-left: auto;
+}
+.folder-actions { display: flex; gap: 6px; align-items: center; }
+.folder-action-btn {
+  background: none; border: none; cursor: pointer; color: var(--text3);
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
+}
+.folder-action-btn:hover { background: var(--surface2); color: var(--text2); }
+.folder-action-btn.danger:hover { background: var(--danger-light); color: var(--danger); }
+
+.folder-name-input {
+  background: var(--bg); border: 1px solid var(--accent);
+  border-radius: 6px; font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 400; color: var(--text);
+  padding: 2px 8px; outline: none; width: 200px;
+  box-shadow: 0 0 0 3px rgba(176,125,90,0.1);
+}
+
+/* Ungrouped zone */
+.ungrouped-label {
+  font-size: 11px; color: var(--text3); text-transform: uppercase;
+  letter-spacing: 0.12em; font-weight: 500; margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.ungrouped-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.add-folder-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: transparent; border: 1.5px dashed var(--border2);
+  border-radius: var(--radius-sm); padding: 8px 16px;
+  font-family: 'Jost', sans-serif; font-size: 12px; font-weight: 400;
+  color: var(--text3); cursor: pointer; margin-bottom: 2rem;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.add-folder-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
 
 /* ===================== CARD ===================== */
 .card {
@@ -183,6 +228,13 @@ header {
 .card-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--text); line-height: 1.2; }
 .card-role { font-size: 10.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
 
+/* Card folder badge */
+.card-folder-badge {
+  font-size: 10px; color: var(--accent); background: var(--accent-light);
+  border-radius: 99px; padding: 2px 8px; display: inline-block;
+  font-weight: 500; letter-spacing: 0.04em; margin-top: auto;
+}
+
 .add-card {
   background: transparent; border: 1.5px dashed var(--border2);
   border-radius: var(--radius); min-height: 155px;
@@ -200,12 +252,6 @@ header {
 .loading { text-align: center; padding: 4rem; color: var(--text3); grid-column: 1/-1; }
 .spinner { width: 26px; height: 26px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-.card:nth-child(1){animation-delay:.04s} .card:nth-child(2){animation-delay:.08s}
-.card:nth-child(3){animation-delay:.12s} .card:nth-child(4){animation-delay:.16s}
-.card:nth-child(5){animation-delay:.20s} .card:nth-child(6){animation-delay:.24s}
-.card:nth-child(7){animation-delay:.28s} .card:nth-child(8){animation-delay:.32s}
-.card:nth-child(n+9){animation-delay:.36s}
 
 /* ===================== MODAL ===================== */
 .overlay {
@@ -258,13 +304,14 @@ header {
 .form-title { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 400; color: var(--text); margin-bottom: 1.5rem; }
 .form-row { margin-bottom: 1.1rem; }
 .form-row label { display: block; font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 7px; font-weight: 600; }
-.form-row input, .form-row textarea {
+.form-row input, .form-row textarea, .form-row select {
   width: 100%; background: var(--bg); border: 1px solid var(--border2);
   border-radius: var(--radius-sm); color: var(--text);
   font-family: 'Jost', sans-serif; font-size: 14px; font-weight: 300;
   padding: 10px 14px; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
 }
-.form-row input:focus, .form-row textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(176,125,90,0.1); }
+.form-row input:focus, .form-row textarea:focus, .form-row select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(176,125,90,0.1); }
 .form-row textarea { resize: vertical; min-height: 78px; line-height: 1.6; }
 
 .color-label { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; font-weight: 600; display: block; }
@@ -294,47 +341,71 @@ header {
 #map-screen {
   display: none; position: fixed; inset: 0;
   background: var(--bg); z-index: 50; flex-direction: column;
+  touch-action: none;
 }
 #map-screen.open { display: flex; }
 
 #map-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0.85rem 1.5rem; background: var(--surface);
-  border-bottom: 1px solid var(--border2); flex-shrink: 0; gap: 1rem; flex-wrap: wrap;
+  padding: 0.85rem 1rem; background: var(--surface);
+  border-bottom: 1px solid var(--border2); flex-shrink: 0; gap: 0.5rem; flex-wrap: wrap;
   box-shadow: 0 2px 12px rgba(100,70,30,0.06);
 }
 #map-header h2 {
-  font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400;
-  color: var(--text); display: flex; align-items: center; gap: 10px;
+  font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400;
+  color: var(--text); display: flex; align-items: center; gap: 8px;
 }
 #map-header h2 span { color: var(--accent); font-style: italic; }
 
-.map-tools { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+.map-tools { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
 .tool-btn {
   background: var(--surface2); border: 1px solid var(--border2);
-  border-radius: var(--radius-sm); padding: 7px 13px;
-  font-family: 'Jost', sans-serif; font-size: 12px; color: var(--text2);
-  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  border-radius: var(--radius-sm); padding: 7px 11px;
+  font-family: 'Jost', sans-serif; font-size: 11px; color: var(--text2);
+  cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
+  white-space: nowrap;
 }
 .tool-btn:hover { background: var(--bg2); color: var(--text); }
 .tool-btn.active { background: var(--accent-light); color: var(--accent); border-color: rgba(176,125,90,0.4); }
-.tool-sep { width: 1px; height: 22px; background: var(--border2); }
-.zoom-display { font-size: 12px; color: var(--text3); min-width: 40px; text-align: center; font-weight: 300; }
+.tool-sep { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
+.zoom-display { font-size: 12px; color: var(--text3); min-width: 38px; text-align: center; font-weight: 300; }
+
+/* Mobile map header — tools row */
+@media (max-width: 640px) {
+  .tool-btn .tool-label { display: none; }
+  .tool-btn { padding: 8px 10px; }
+  #map-header { padding: 0.6rem 0.75rem; gap: 0.4rem; }
+  #map-header h2 { font-size: 15px; }
+}
 
 #map-body { flex: 1; display: flex; overflow: hidden; }
 
+/* Mobile: sidebar becomes bottom drawer */
 #map-sidebar {
   width: 220px; flex-shrink: 0; background: var(--surface);
   border-right: 1px solid var(--border2); display: flex; flex-direction: column; overflow: hidden;
 }
+
+/* Sidebar search */
+.sidebar-search-wrap { position: relative; padding: 0 0.75rem 0.5rem; }
+.sidebar-search-wrap svg { position: absolute; left: calc(0.75rem + 10px); top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
+#sidebar-search {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border2);
+  border-radius: 8px; color: var(--text); font-family: 'Jost', sans-serif;
+  font-size: 12px; font-weight: 300; padding: 7px 10px 7px 32px;
+  outline: none; transition: border-color 0.2s;
+}
+#sidebar-search:focus { border-color: var(--accent); }
+#sidebar-search::placeholder { color: var(--text3); }
+
 #map-sidebar-title {
-  padding: 1rem 1rem 0.5rem;
+  padding: 1rem 1rem 0.4rem;
   font-size: 10px; color: var(--accent); text-transform: uppercase;
   letter-spacing: 0.14em; font-weight: 600;
 }
 #map-sidebar-hint {
-  padding: 0 1rem 0.75rem;
+  padding: 0 1rem 0.5rem;
   font-size: 11px; color: var(--text3); font-weight: 300; line-height: 1.5;
 }
 #sidebar-list { flex: 1; overflow-y: auto; padding: 0 0.5rem 1rem; }
@@ -359,12 +430,23 @@ header {
 .sidebar-item .si-name { font-size: 13px; color: var(--text); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-item .si-role { font-size: 10px; color: var(--text3); }
 
+/* Mobile sidebar add button */
+.sidebar-add-btn {
+  display: none; align-items: center; gap: 6px;
+  padding: 6px 8px; border-radius: var(--radius-sm);
+  background: var(--accent-light); border: 1px solid rgba(176,125,90,0.3);
+  font-family: 'Jost', sans-serif; font-size: 12px; color: var(--accent);
+  cursor: pointer; margin-bottom: 2px; width: 100%;
+}
+.sidebar-add-btn:hover { background: rgba(176,125,90,0.2); }
+
 #map-canvas-wrap {
   flex: 1; position: relative; overflow: hidden;
   background: var(--bg);
   background-image: radial-gradient(circle, rgba(160,130,90,0.12) 1px, transparent 1px);
   background-size: 28px 28px;
   cursor: default;
+  touch-action: none;
 }
 #map-canvas-wrap.panning { cursor: grabbing; }
 #map-canvas-wrap.linking { cursor: crosshair; }
@@ -411,46 +493,38 @@ header {
 .map-node:hover .node-del-btn,
 .map-node.selected .node-del-btn { display: flex; }
 
+/* On mobile always show del button */
+@media (pointer: coarse) {
+  .map-node .node-del-btn { display: flex; }
+}
+
 /* ===================== SVG EDGES ===================== */
 #edges-svg {
   position: absolute; top: 0; left: 0;
   width: 8000px; height: 8000px;
-  /* CORRECTION CRITIQUE : pointer-events doit être "all" et non "none"
-     pour que les clics/survols/clic-droit fonctionnent sur les traits */
   pointer-events: all;
   overflow: visible;
 }
 
-/* Zone de clic invisible large (pour faciliter le clic sur la ligne fine) */
 .edge-hitarea {
   stroke: transparent;
-  stroke-width: 18;
+  stroke-width: 22;
   fill: none;
   pointer-events: stroke;
   cursor: pointer;
 }
 
-/* Trait visible */
 .edge-line {
   stroke: #1a1208;
   stroke-width: 2;
   fill: none;
-  pointer-events: none; /* le hitarea gère les clics */
+  pointer-events: none;
   opacity: 0.7;
   transition: opacity 0.15s, stroke-width 0.15s;
 }
-.edge-line.selected {
-  stroke-width: 3;
-  opacity: 1;
-}
+.edge-line.selected { stroke-width: 3; opacity: 1; }
+.edge-group:hover .edge-line { stroke-width: 3; opacity: 1; }
 
-/* Quand le groupe est survolé, le trait s'épaissit */
-.edge-group:hover .edge-line {
-  stroke-width: 3;
-  opacity: 1;
-}
-
-/* Prévisualisation en pointillés bleus */
 .edge-preview {
   stroke: rgba(122,171,238,0.6);
   stroke-width: 1.5;
@@ -459,7 +533,6 @@ header {
   pointer-events: none;
 }
 
-/* Drop hint */
 #drop-hint {
   position: absolute; inset: 0; pointer-events: none;
   display: flex; align-items: center; justify-content: center;
@@ -508,7 +581,7 @@ header {
   position: fixed; background: var(--surface);
   border: 1px solid var(--border2); border-radius: var(--radius-sm);
   padding: 16px; z-index: 401; display: none; flex-direction: column; gap: 11px;
-  box-shadow: var(--shadow-lg); min-width: 280px;
+  box-shadow: var(--shadow-lg); min-width: 280px; max-width: 90vw;
 }
 #label-popup.open { display: flex; }
 #label-popup label { font-size: 10px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
@@ -533,7 +606,66 @@ header {
 
 #label-popup-btns { display: flex; gap: 6px; }
 
+/* ===================== MOBILE MAP — bottom drawer sidebar ===================== */
+@media (max-width: 700px) {
+  #map-sidebar {
+    position: fixed; bottom: 0; left: 0; right: 0; top: auto;
+    width: 100%; height: 50vh; border-right: none;
+    border-top: 1px solid var(--border2);
+    z-index: 60; transform: translateY(100%);
+    transition: transform 0.3s ease;
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -6px 30px rgba(100,70,30,0.12);
+  }
+  #map-sidebar.mobile-open { transform: translateY(0); }
+
+  #map-sidebar-title { padding-top: 1.2rem; }
+  #map-sidebar-title::before {
+    content: ''; display: block; width: 36px; height: 4px;
+    background: var(--border2); border-radius: 2px;
+    margin: 0 auto 0.75rem;
+  }
+
+  #map-body { position: relative; }
+
+  .sidebar-add-btn { display: flex; }
+
+  #map-instructions { display: none; }
+
+  /* Mobile floating button to open sidebar */
+  #mobile-sidebar-fab {
+    display: flex; position: absolute; bottom: 1rem; left: 1rem;
+    z-index: 55;
+    background: var(--surface); border: 1px solid var(--border2);
+    border-radius: 99px; padding: 8px 14px; gap: 6px;
+    align-items: center; font-size: 12px; color: var(--text2);
+    font-family: 'Jost', sans-serif;
+    box-shadow: var(--shadow-lg); cursor: pointer;
+  }
+  #map-canvas-wrap { touch-action: none; }
+}
+
+@media (min-width: 701px) {
+  #mobile-sidebar-fab { display: none !important; }
+}
+
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* ===================== RESPONSIVE ===================== */
+@media (max-width: 640px) {
+  header { padding: 1.5rem 1rem 0; }
+  .header-right { width: 100%; }
+  #search { width: 100%; }
+  .search-wrap { flex: 1; }
+  #grid-wrap { padding: 1.25rem 1rem; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .modal { padding: 1.5rem 1.25rem; border-radius: 16px; }
+  .modal-actions { flex-direction: column; }
+  .modal-actions .btn-primary, .modal-actions .btn-secondary, .modal-actions .btn-danger { width: 100%; justify-content: center; }
+  .divider { margin: 1rem auto 0; padding: 0 1rem; }
+  .add-folder-btn { width: 100%; justify-content: center; }
+  #toast { bottom: 1rem; white-space: normal; text-align: center; max-width: 85vw; }
+}
 </style>
 </head>
 <body>
@@ -573,20 +705,18 @@ header {
       </div>
       <button class="btn-secondary" id="map-btn" onclick="openMap()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        Carte des liens
+        <span class="tool-label">Carte des liens</span>
       </button>
       <button class="btn-primary" id="add-btn" style="display:none;" onclick="openAdd()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-        Nouveau
+        <span class="tool-label">Nouveau</span>
       </button>
     </div>
   </header>
   <div class="divider"></div>
   <div id="grid-wrap">
     <div id="count"></div>
-    <div class="grid" id="grid">
-      <div class="loading"><div class="spinner"></div>Chargement des personnages…</div>
-    </div>
+    <div id="folders-area"></div>
   </div>
 </div>
 
@@ -599,21 +729,21 @@ header {
 <div id="map-screen">
   <div id="map-header">
     <h2>
-      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       Carte des <span>liens</span>
     </h2>
     <div class="map-tools">
       <button class="tool-btn" id="tool-select" onclick="setTool('select')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg>
-        Sélectionner
+        <span class="tool-label">Sélectionner</span>
       </button>
       <button class="tool-btn" id="tool-link" onclick="setTool('link')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-        Relier
+        <span class="tool-label">Relier</span>
       </button>
       <button class="tool-btn" id="tool-pan" onclick="setTool('pan')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>
-        Naviguer
+        <span class="tool-label">Naviguer</span>
       </button>
       <div class="tool-sep"></div>
       <button class="tool-btn" onclick="zoomBy(0.2)">
@@ -629,18 +759,22 @@ header {
       <div class="tool-sep"></div>
       <button class="tool-btn" onclick="saveMap()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Sauvegarder
+        <span class="tool-label">Sauvegarder</span>
       </button>
       <button class="tool-btn" onclick="closeMap()">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
-        Fermer
+        <span class="tool-label">Fermer</span>
       </button>
     </div>
   </div>
   <div id="map-body">
     <div id="map-sidebar">
-      <div id="map-sidebar-title">Voici tous les incroyables personnages de ton incroyaaaaaable livre ❤️</div>
-      <div id="map-sidebar-hint">Glissez un personnage sur la carte pour l'ajouter.</div>
+      <div id="map-sidebar-title">Personnages ❤️</div>
+      <div id="map-sidebar-hint">Glissez (ou touchez) un perso pour l'ajouter.</div>
+      <div class="sidebar-search-wrap">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" id="sidebar-search" placeholder="Rechercher…" oninput="renderSidebar()">
+      </div>
       <div id="sidebar-list"></div>
     </div>
     <div id="map-canvas-wrap">
@@ -661,6 +795,11 @@ header {
         <strong>Molette</strong> — zoom · <strong>Espace</strong> — naviguer
       </div>
     </div>
+    <!-- Mobile FAB to open sidebar drawer -->
+    <button id="mobile-sidebar-fab" onclick="toggleMobileSidebar()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Personnages
+    </button>
   </div>
 </div>
 
@@ -714,20 +853,11 @@ const COLORS = [
 ];
 
 const LINK_ICONS = {
-  'amis': '',
-  'ennemis': '',
-  'rivaux': '',
-  'amoureux': '',
-  'frère': '',
-  'sœur': '',
-  'frère / sœur': '',
-  'parent': '',
-  'enfant': '',
-  'parent / enfant': '',
-  'allié': '',
-  'maître': '',
-  'élève': '',
-  'maître / élève': '',
+  'amis': '🤝', 'ennemis': '⚔️', 'rivaux': '🔥',
+  'amoureux': '❤️', 'frère': '👫', 'sœur': '👫',
+  'frère / sœur': '👫', 'parent': '👨‍👧', 'enfant': '👨‍👧',
+  'parent / enfant': '👨‍👧', 'allié': '🛡️', 'maître': '📚',
+  'élève': '📚', 'maître / élève': '📚',
 };
 
 function getLinkIcon(label) {
@@ -742,7 +872,12 @@ function getLinkIcon(label) {
 let characters = [];
 let isEditor = false;
 let currentEditColor = 0;
+let currentEditId = null; // Store current edit ID separately (fix for edit bug)
 
+// Folders
+let folders = []; // [{ id, name, collapsed }]
+
+// Map state
 let mapNodes = [], mapEdges = [];
 let mapTool = 'select';
 let viewX = 0, viewY = 0, viewScale = 1;
@@ -752,6 +887,9 @@ let draggingNode = null, dragOffX = 0, dragOffY = 0;
 let linkSource = null, previewLine = null;
 let selectedEdgeId = null, edgeMenuTargetId = null;
 let pendingEdgeFrom = null, pendingEdgeTo = null, editingEdgeId = null;
+
+// Touch state for map
+let touchState = null; // null | { type: 'pan'|'pinch', ... }
 
 let toastTimer;
 function showToast(msg) {
@@ -787,54 +925,263 @@ function initials(name) {
   return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
+// ===================== FOLDERS =====================
+function loadFolders() {
+  try {
+    const raw = localStorage.getItem('roman_folders_v1');
+    if (raw) folders = JSON.parse(raw);
+    else folders = [];
+  } catch(e) { folders = []; }
+}
+
+function saveFolders() {
+  localStorage.setItem('roman_folders_v1', JSON.stringify(folders));
+}
+
+function genId() { return Math.random().toString(36).slice(2, 10); }
+
+function addFolder() {
+  const id = genId();
+  folders.push({ id, name: 'Nouveau dossier', collapsed: false });
+  saveFolders();
+  renderGrid();
+  // Auto-focus the rename on the new folder
+  setTimeout(() => startRenameFolder(id), 50);
+}
+
+function startRenameFolder(id) {
+  const folder = folders.find(f => f.id === id);
+  if (!folder) return;
+  const el = document.querySelector(`.folder-name-display[data-folder-id="${id}"]`);
+  if (!el) return;
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'folder-name-input';
+  input.value = folder.name;
+  el.replaceWith(input);
+  input.focus();
+  input.select();
+  const finish = () => {
+    folder.name = input.value.trim() || 'Dossier sans nom';
+    saveFolders();
+    renderGrid();
+  };
+  input.addEventListener('blur', finish);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { input.blur(); }
+    if (e.key === 'Escape') { folder.name = folder.name; renderGrid(); }
+  });
+}
+
+function toggleFolder(id) {
+  const folder = folders.find(f => f.id === id);
+  if (folder) { folder.collapsed = !folder.collapsed; saveFolders(); renderGrid(); }
+}
+
+function deleteFolder(id) {
+  // Move characters in this folder to ungrouped
+  characters.forEach(c => { if (c.folder_id === id) c.folder_id = null; });
+  folders = folders.filter(f => f.id !== id);
+  saveFolders();
+  renderGrid();
+  showToast('Dossier supprimé');
+}
+
+function setCharFolder(charId, folderId) {
+  const c = characters.find(x => x.id === charId);
+  if (c) c.folder_id = folderId || null;
+  // Persist folder assignment in localStorage since Supabase schema may not have this
+  saveCharFolders();
+  renderGrid();
+}
+
+function saveCharFolders() {
+  const map = {};
+  characters.forEach(c => { if (c.folder_id) map[c.id] = c.folder_id; });
+  localStorage.setItem('roman_char_folders_v1', JSON.stringify(map));
+}
+
+function loadCharFolders() {
+  try {
+    const raw = localStorage.getItem('roman_char_folders_v1');
+    if (raw) {
+      const map = JSON.parse(raw);
+      characters.forEach(c => { c.folder_id = map[c.id] || null; });
+    }
+  } catch(e) {}
+}
+
+// ===================== GRID =====================
 function renderGrid() {
   const filter = document.getElementById('search').value.toLowerCase();
-  const grid = document.getElementById('grid');
+  const area = document.getElementById('folders-area');
+  area.innerHTML = '';
+
   const filtered = characters.filter(c =>
     c.nom.toLowerCase().includes(filter) ||
     (c.role || '').toLowerCase().includes(filter)
   );
   document.getElementById('count').textContent =
     filtered.length + ' personnage' + (filtered.length !== 1 ? 's' : '');
-  grid.innerHTML = '';
+
   if (characters.length === 0) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">✦</div><p>Aucun personnage pour l'instant.</p><p style="margin-top:6px;font-size:13px;">Cliquez sur "Nouveau" pour commencer !</p></div>`;
-  } else if (filtered.length === 0) {
-    grid.innerHTML = `<div class="empty"><p>Aucun résultat pour cette recherche.</p></div>`;
-  } else {
-    filtered.forEach(c => {
-      const col = COLORS[c.couleur || 0];
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.style.setProperty('--card-accent', col.accent);
-      card.innerHTML = `
-        <div class="avatar" style="background:${col.bg};color:${col.text}">${initials(c.nom)}</div>
-        <div>
-          <div class="card-name">${c.nom}</div>
-          <div class="card-role">${c.role || ''}</div>
-        </div>`;
-      card.onclick = () => openCard(c.id);
-      grid.appendChild(card);
-    });
+    area.innerHTML = `<div class="grid"><div class="empty"><div class="empty-icon">✦</div><p>Aucun personnage pour l'instant.</p>${isEditor ? '<p style="margin-top:6px;font-size:13px;">Cliquez sur "Nouveau" pour commencer !</p>' : ''}</div></div>`;
+    if (isEditor) renderAddFolderBtn(area);
+    return;
   }
-  if (isEditor) {
-    const add = document.createElement('div');
-    add.className = 'add-card';
-    add.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg><span>Nouveau personnage</span>`;
-    add.onclick = openAdd;
-    grid.appendChild(add);
+
+  if (filter) {
+    // In search mode, flat list without folders
+    if (filtered.length === 0) {
+      area.innerHTML = `<div class="grid"><div class="empty"><p>Aucun résultat.</p></div></div>`;
+    } else {
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      filtered.forEach(c => grid.appendChild(makeCard(c)));
+      area.appendChild(grid);
+    }
+    return;
   }
+
+  // Render folders
+  folders.forEach(folder => {
+    const chars = characters.filter(c => c.folder_id === folder.id);
+    const section = document.createElement('div');
+    section.className = 'folder-section';
+
+    const header = document.createElement('div');
+    header.className = 'folder-header';
+
+    const toggle = document.createElement('button');
+    toggle.className = 'folder-toggle' + (folder.collapsed ? ' collapsed' : '');
+    toggle.innerHTML = `
+      <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      <span class="folder-name-display" data-folder-id="${folder.id}">${escHtml(folder.name)}</span>
+    `;
+    toggle.onclick = (e) => {
+      if (e.target.closest('.folder-name-display')) return;
+      toggleFolder(folder.id);
+    };
+
+    const count = document.createElement('span');
+    count.className = 'folder-count';
+    count.textContent = chars.length + ' perso' + (chars.length !== 1 ? 's' : '');
+
+    const actions = document.createElement('div');
+    actions.className = 'folder-actions';
+    if (isEditor) {
+      actions.innerHTML = `
+        <button class="folder-action-btn" title="Renommer" onclick="startRenameFolder('${folder.id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="folder-action-btn danger" title="Supprimer le dossier" onclick="deleteFolder('${folder.id}')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/></svg>
+        </button>`;
+    }
+
+    header.appendChild(toggle);
+    header.appendChild(count);
+    header.appendChild(actions);
+    section.appendChild(header);
+
+    if (!folder.collapsed) {
+      const grid = document.createElement('div');
+      grid.className = 'grid';
+      chars.forEach(c => grid.appendChild(makeCard(c)));
+      if (isEditor) {
+        const addCard = document.createElement('div');
+        addCard.className = 'add-card';
+        addCard.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg><span>Nouveau personnage ici</span>`;
+        addCard.onclick = () => openAddInFolder(folder.id);
+        grid.appendChild(addCard);
+      }
+      section.appendChild(grid);
+    }
+
+    area.appendChild(section);
+  });
+
+  // Ungrouped
+  const ungrouped = characters.filter(c => !c.folder_id);
+  if (ungrouped.length > 0 || folders.length === 0) {
+    if (folders.length > 0) {
+      const label = document.createElement('div');
+      label.className = 'ungrouped-label';
+      label.textContent = 'Sans dossier';
+      area.appendChild(label);
+    }
+    const grid = document.createElement('div');
+    grid.className = 'grid';
+    ungrouped.forEach(c => grid.appendChild(makeCard(c)));
+    if (isEditor) {
+      const addCard = document.createElement('div');
+      addCard.className = 'add-card';
+      addCard.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12h14"/></svg><span>Nouveau personnage</span>`;
+      addCard.onclick = openAdd;
+      grid.appendChild(addCard);
+    }
+    area.appendChild(grid);
+  } else if (isEditor && ungrouped.length === 0) {
+    // still show add btn
+  }
+
+  if (isEditor) renderAddFolderBtn(area);
 }
 
+function renderAddFolderBtn(area) {
+  const btn = document.createElement('button');
+  btn.className = 'add-folder-btn';
+  btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M12 11v6M9 14h6"/></svg> Créer un dossier`;
+  btn.onclick = addFolder;
+  area.appendChild(btn);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function makeCard(c) {
+  const col = COLORS[c.couleur || 0];
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.setProperty('--card-accent', col.accent);
+  card.innerHTML = `
+    <div class="avatar" style="background:${col.bg};color:${col.text}">${initials(c.nom)}</div>
+    <div>
+      <div class="card-name">${escHtml(c.nom)}</div>
+      <div class="card-role">${escHtml(c.role || '')}</div>
+    </div>`;
+  card.onclick = () => openCard(c.id);
+  return card;
+}
+
+// ===================== CARD MODAL =====================
 function openCard(id) {
   const c = characters.find(x => x.id === id);
   const col = COLORS[c.couleur || 0];
   const field = (val) => val
-    ? `<div class="section-content">${val}</div>`
+    ? `<div class="section-content">${escHtml(val)}</div>`
     : `<div class="section-content empty-field">Non renseigné</div>`;
+
+  // Build folder selector for editor
+  let folderSection = '';
+  if (isEditor) {
+    const opts = folders.map(f =>
+      `<option value="${f.id}" ${c.folder_id === f.id ? 'selected' : ''}>${escHtml(f.name)}</option>`
+    ).join('');
+    folderSection = `
+      <div class="section">
+        <div class="section-label">Dossier</div>
+        <select onchange="setCharFolder('${c.id}', this.value)" style="background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;font-family:'Jost',sans-serif;font-size:13px;color:var(--text);width:100%;outline:none;">
+          <option value="">— Sans dossier —</option>
+          ${opts}
+        </select>
+      </div>`;
+  }
+
   const actions = isEditor ? `
     <div class="modal-actions">
-      <button class="btn-primary" onclick="openEdit('${c.id}')">
+      <button class="btn-primary" onclick="openEditById('${c.id}')">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         Modifier
       </button>
@@ -843,50 +1190,79 @@ function openCard(id) {
         Supprimer
       </button>
     </div>` : '';
+
   document.getElementById('modal').innerHTML = `
     <button class="close-btn" onclick="closeModal()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
     <div class="modal-header">
       <div class="modal-avatar" style="background:${col.bg};color:${col.text}">${initials(c.nom)}</div>
-      <div><div class="modal-name">${c.nom}</div><div class="modal-role">${c.role || ''}</div></div>
+      <div><div class="modal-name">${escHtml(c.nom)}</div><div class="modal-role">${escHtml(c.role || '')}</div></div>
     </div>
     <div class="section"><div class="section-label">Physique</div>${field(c.physique)}</div>
     <div class="section"><div class="section-label">Psychologie</div>${field(c.psychologie)}</div>
     <div class="section"><div class="section-label">Liens</div>${field(c.liens)}</div>
     <div class="section"><div class="section-label">Histoire</div>${field(c.histoire)}</div>
+    ${folderSection}
     ${actions}`;
   document.getElementById('overlay').classList.add('open');
 }
 
-function openEdit(id) {
+// ===================== EDIT FORM — BUG FIX =====================
+// Stocke l'ID dans une variable globale au lieu de l'injecter dans le HTML
+function openEditById(id) {
   const c = characters.find(x => x.id === id);
+  if (!c) return;
   currentEditColor = c.couleur || 0;
+  currentEditId = c.id; // <-- clé du fix : variable globale, pas dans le DOM
   renderForm(c);
 }
-function openAdd() { currentEditColor = 0; renderForm(null); }
 
-function renderForm(c) {
+// Alias pour compatibilité
+function openEdit(id) { openEditById(id); }
+
+function openAdd() { currentEditColor = 0; currentEditId = null; renderForm(null, null); }
+function openAddInFolder(folderId) { currentEditColor = 0; currentEditId = null; renderForm(null, folderId); }
+
+function renderForm(c, defaultFolderId) {
   const dots = COLORS.map((col, i) =>
     `<div class="color-dot${currentEditColor === i ? ' selected' : ''}"
       style="background:${col.bg};border-color:${currentEditColor === i ? col.text : 'transparent'}"
       onclick="selectColor(${i})" title="${col.label}"></div>`
   ).join('');
+
+  // Folder selector
+  let folderSel = '';
+  if (isEditor && folders.length > 0) {
+    const selectedFolder = c ? (c.folder_id || '') : (defaultFolderId || '');
+    const opts = folders.map(f =>
+      `<option value="${f.id}" ${selectedFolder === f.id ? 'selected' : ''}>${escHtml(f.name)}</option>`
+    ).join('');
+    folderSel = `
+      <div class="form-row">
+        <label>Dossier</label>
+        <select id="f-folder">
+          <option value="">— Sans dossier —</option>${opts}
+        </select>
+      </div>`;
+  }
+
   document.getElementById('modal').innerHTML = `
     <button class="close-btn" onclick="closeModal()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
-    <div class="form-title">${c ? 'Modifier ' + c.nom : 'Nouveau personnage'}</div>
-    <div class="form-row"><label>Nom *</label><input id="f-nom" type="text" value="${c ? c.nom : ''}" placeholder="Ex : Éléonore"></div>
-    <div class="form-row"><label>Rôle</label><input id="f-role" type="text" value="${c ? c.role || '' : ''}" placeholder="Ex : Protagoniste, Antagoniste…"></div>
+    <div class="form-title">${c ? 'Modifier ' + escHtml(c.nom) : 'Nouveau personnage'}</div>
+    <div class="form-row"><label>Nom *</label><input id="f-nom" type="text" value="${c ? escHtml(c.nom) : ''}" placeholder="Ex : Éléonore"></div>
+    <div class="form-row"><label>Rôle</label><input id="f-role" type="text" value="${c ? escHtml(c.role || '') : ''}" placeholder="Ex : Protagoniste, Antagoniste…"></div>
     <span class="color-label">Couleur de la carte</span>
     <div class="color-picker" id="color-picker">${dots}</div>
-    <div class="form-row"><label>Physique</label><textarea id="f-physique" placeholder="Apparence, traits distinctifs…">${c ? c.physique || '' : ''}</textarea></div>
-    <div class="form-row"><label>Psychologie</label><textarea id="f-psycho" placeholder="Caractère, émotions, motivations…">${c ? c.psychologie || '' : ''}</textarea></div>
-    <div class="form-row"><label>Liens avec d'autres personnages</label><textarea id="f-liens" placeholder="Relations, alliances, conflits…">${c ? c.liens || '' : ''}</textarea></div>
-    <div class="form-row"><label>Histoire / Contexte</label><textarea id="f-histoire" placeholder="Passé, rôle dans l'histoire…">${c ? c.histoire || '' : ''}</textarea></div>
+    ${folderSel}
+    <div class="form-row"><label>Physique</label><textarea id="f-physique" placeholder="Apparence, traits distinctifs…">${c ? escHtml(c.physique || '') : ''}</textarea></div>
+    <div class="form-row"><label>Psychologie</label><textarea id="f-psycho" placeholder="Caractère, émotions, motivations…">${c ? escHtml(c.psychologie || '') : ''}</textarea></div>
+    <div class="form-row"><label>Liens avec d'autres personnages</label><textarea id="f-liens" placeholder="Relations, alliances, conflits…">${c ? escHtml(c.liens || '') : ''}</textarea></div>
+    <div class="form-row"><label>Histoire / Contexte</label><textarea id="f-histoire" placeholder="Passé, rôle dans l'histoire…">${c ? escHtml(c.histoire || '') : ''}</textarea></div>
     <div class="modal-actions">
-      <button class="btn-primary" onclick="saveChar('${c ? c.id : ''}')">
+      <button class="btn-primary" onclick="saveChar()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
         Enregistrer
       </button>
@@ -903,9 +1279,12 @@ function selectColor(i) {
   });
 }
 
-async function saveChar(id) {
+// ===================== SAVE CHAR — uses currentEditId global =====================
+async function saveChar() {
   const nom = document.getElementById('f-nom').value.trim();
   if (!nom) { showToast('⚠️ Le nom est requis.'); return; }
+  const folderEl = document.getElementById('f-folder');
+  const folderId = folderEl ? folderEl.value : null;
   const data = {
     nom, role: document.getElementById('f-role').value.trim(),
     couleur: currentEditColor,
@@ -914,17 +1293,29 @@ async function saveChar(id) {
     liens: document.getElementById('f-liens').value.trim(),
     histoire: document.getElementById('f-histoire').value.trim(),
   };
-  if (id) {
-    await api(`personnages?id=eq.${id}`, 'PATCH', data);
-    const idx = characters.findIndex(c => c.id === id);
-    if (idx !== -1) characters[idx] = { ...characters[idx], ...data };
+
+  if (currentEditId) {
+    await api(`personnages?id=eq.${currentEditId}`, 'PATCH', data);
+    const idx = characters.findIndex(c => c.id === currentEditId);
+    if (idx !== -1) {
+      characters[idx] = { ...characters[idx], ...data };
+      if (folderId !== null) characters[idx].folder_id = folderId || null;
+    }
+    saveCharFolders();
     showToast('✓ Personnage modifié');
   } else {
     const result = await api('personnages', 'POST', data);
-    if (Array.isArray(result) && result[0]) characters.push(result[0]);
-    else await loadCharacters();
+    if (Array.isArray(result) && result[0]) {
+      const newChar = result[0];
+      newChar.folder_id = folderId || null;
+      characters.push(newChar);
+      saveCharFolders();
+    } else {
+      await loadCharacters();
+    }
     showToast('✓ Personnage ajouté');
   }
+  currentEditId = null;
   closeModal(); renderGrid(); renderSidebar();
 }
 
@@ -934,6 +1325,7 @@ async function deleteChar(id) {
   const removedNodeIds = mapNodes.filter(n => n.charId === id).map(n => n.id);
   mapNodes = mapNodes.filter(n => n.charId !== id);
   mapEdges = mapEdges.filter(e => !removedNodeIds.includes(e.from) && !removedNodeIds.includes(e.to));
+  saveCharFolders();
   renderGrid();
   renderSidebar();
   if (document.getElementById('map-screen').classList.contains('open')) renderMapFull();
@@ -941,17 +1333,22 @@ async function deleteChar(id) {
   await api(`personnages?id=eq.${id}`, 'DELETE');
 }
 
-function closeModal() { document.getElementById('overlay').classList.remove('open'); }
+function closeModal() { document.getElementById('overlay').classList.remove('open'); currentEditId = null; }
 function closeOverlay(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
 
+// ===================== MAP =====================
 async function openMap() {
   document.getElementById('map-screen').classList.add('open');
-  await loadMapData();
+  loadMapData();
   renderSidebar();
   renderMapFull();
   setTool('select');
 }
-function closeMap() { document.getElementById('map-screen').classList.remove('open'); }
+function closeMap() {
+  document.getElementById('map-screen').classList.remove('open');
+  // Close mobile drawer too
+  document.getElementById('map-sidebar').classList.remove('mobile-open');
+}
 
 function loadMapData() {
   try {
@@ -968,13 +1365,21 @@ function saveMap() {
   } catch(e) { showToast('⚠️ Erreur de sauvegarde'); }
 }
 
-function genId() { return Math.random().toString(36).slice(2, 10); }
-
+// ===================== SIDEBAR (with search) =====================
 function renderSidebar() {
   const list = document.getElementById('sidebar-list');
   if (!list) return;
+  const searchEl = document.getElementById('sidebar-search');
+  const filter = searchEl ? searchEl.value.toLowerCase() : '';
   list.innerHTML = '';
-  characters.forEach(c => {
+
+  const filtered = characters.filter(c =>
+    !filter ||
+    c.nom.toLowerCase().includes(filter) ||
+    (c.role || '').toLowerCase().includes(filter)
+  );
+
+  filtered.forEach(c => {
     const onMap = mapNodes.some(n => n.charId === c.id);
     const col = COLORS[c.couleur || 0];
     const item = document.createElement('div');
@@ -982,15 +1387,46 @@ function renderSidebar() {
     item.dataset.charId = c.id;
     item.innerHTML = `
       <div class="mini-avatar" style="background:${col.bg};color:${col.text}">${initials(c.nom)}</div>
-      <div><div class="si-name">${c.nom}</div><div class="si-role">${c.role || ''}</div></div>`;
+      <div><div class="si-name">${escHtml(c.nom)}</div><div class="si-role">${escHtml(c.role || '')}</div></div>`;
     if (!onMap) {
       item.draggable = true;
       item.addEventListener('dragstart', e => e.dataTransfer.setData('charId', c.id));
+      // Mobile: tap to add to map center
+      item.addEventListener('click', () => addToMapCenter(c.id));
     }
     list.appendChild(item);
   });
+
+  if (filtered.length === 0 && filter) {
+    list.innerHTML = `<div style="padding:12px 8px;font-size:12px;color:var(--text3);font-style:italic;">Aucun résultat</div>`;
+  }
 }
 
+// Add character to map center (mobile friendly)
+function addToMapCenter(charId) {
+  if (mapNodes.some(n => n.charId === charId)) return;
+  const wrap = document.getElementById('map-canvas-wrap');
+  const rect = wrap.getBoundingClientRect();
+  const cx = (rect.width / 2 - viewX) / viewScale;
+  const cy = (rect.height / 2 - viewY) / viewScale;
+  // Add small random offset so they don't all stack
+  const offsetX = (Math.random() - 0.5) * 120;
+  const offsetY = (Math.random() - 0.5) * 80;
+  mapNodes.push({ id: genId(), charId, x: cx + offsetX, y: cy + offsetY });
+  renderSidebar();
+  renderMapFull();
+  showToast('✓ Personnage ajouté à la carte');
+  // Close drawer on mobile after adding
+  if (window.innerWidth <= 700) {
+    document.getElementById('map-sidebar').classList.remove('mobile-open');
+  }
+}
+
+function toggleMobileSidebar() {
+  document.getElementById('map-sidebar').classList.toggle('mobile-open');
+}
+
+// ===================== CANVAS DRAG & DROP =====================
 const canvasWrap = document.getElementById('map-canvas-wrap');
 canvasWrap.addEventListener('dragover', e => {
   e.preventDefault();
@@ -1010,6 +1446,7 @@ canvasWrap.addEventListener('drop', e => {
   showToast('✓ Personnage ajouté à la carte');
 });
 
+// ===================== TRANSFORM =====================
 function applyTransform() {
   document.getElementById('map-world').style.transform = `translate(${viewX}px,${viewY}px) scale(${viewScale})`;
   document.getElementById('zoom-display').textContent = Math.round(viewScale * 100) + '%';
@@ -1034,6 +1471,122 @@ canvasWrap.addEventListener('wheel', e => {
   zoomBy(e.deltaY > 0 ? -0.1 : 0.1, e.clientX, e.clientY);
 }, { passive: false });
 
+// ===================== TOUCH SUPPORT FOR MAP =====================
+canvasWrap.addEventListener('touchstart', e => {
+  e.preventDefault();
+  closeEdgeMenu();
+  const touches = e.touches;
+
+  if (touches.length === 1) {
+    const t = touches[0];
+    const rect = canvasWrap.getBoundingClientRect();
+    const wx = (t.clientX - rect.left - viewX) / viewScale;
+    const wy = (t.clientY - rect.top - viewY) / viewScale;
+
+    // Check if touching a node
+    if (mapTool === 'select') {
+      const node = findNodeAt(wx, wy);
+      if (node) {
+        touchState = { type: 'node', node, startX: t.clientX, startY: t.clientY, origX: node.x, origY: node.y };
+        return;
+      }
+    }
+    if (mapTool === 'link') {
+      const node = findNodeAt(wx, wy);
+      if (node) {
+        handleLinkTap(node);
+        return;
+      }
+    }
+    // Pan
+    touchState = { type: 'pan', startX: t.clientX, startY: t.clientY, origViewX: viewX, origViewY: viewY };
+  } else if (touches.length === 2) {
+    // Pinch zoom
+    const dx = touches[1].clientX - touches[0].clientX;
+    const dy = touches[1].clientY - touches[0].clientY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    touchState = {
+      type: 'pinch',
+      startDist: dist,
+      startScale: viewScale,
+      centerX: (touches[0].clientX + touches[1].clientX) / 2,
+      centerY: (touches[0].clientY + touches[1].clientY) / 2,
+      startViewX: viewX,
+      startViewY: viewY,
+    };
+  }
+}, { passive: false });
+
+canvasWrap.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!touchState) return;
+  const touches = e.touches;
+
+  if (touchState.type === 'pan' && touches.length === 1) {
+    const t = touches[0];
+    viewX = touchState.origViewX + (t.clientX - touchState.startX);
+    viewY = touchState.origViewY + (t.clientY - touchState.startY);
+    applyTransform();
+  } else if (touchState.type === 'pinch' && touches.length === 2) {
+    const dx = touches[1].clientX - touches[0].clientX;
+    const dy = touches[1].clientY - touches[0].clientY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const scale = Math.max(0.2, Math.min(3, touchState.startScale * (dist / touchState.startDist)));
+    const ratio = scale / viewScale;
+    const wrap = canvasWrap.getBoundingClientRect();
+    const ox = touchState.centerX - wrap.left;
+    const oy = touchState.centerY - wrap.top;
+    viewX = ox - (ox - viewX) * ratio;
+    viewY = oy - (oy - viewY) * ratio;
+    viewScale = scale;
+    applyTransform();
+  } else if (touchState.type === 'node' && touches.length === 1) {
+    const t = touches[0];
+    const rect = canvasWrap.getBoundingClientRect();
+    touchState.node.x = (t.clientX - rect.left - viewX) / viewScale;
+    touchState.node.y = (t.clientY - rect.top - viewY) / viewScale;
+    const el = document.querySelector(`.map-node[data-node-id="${touchState.node.id}"]`);
+    if (el) { el.style.left = touchState.node.x + 'px'; el.style.top = touchState.node.y + 'px'; }
+    renderEdges();
+  }
+}, { passive: false });
+
+canvasWrap.addEventListener('touchend', e => {
+  touchState = null;
+  draggingNode = null;
+}, { passive: false });
+
+function findNodeAt(wx, wy) {
+  return mapNodes.find(n => {
+    const dx = n.x - wx, dy = n.y - wy;
+    return Math.sqrt(dx*dx + dy*dy) < 40;
+  });
+}
+
+function handleLinkTap(node) {
+  if (!linkSource) {
+    linkSource = node;
+    const el = document.querySelector(`.map-node[data-node-id="${node.id}"]`);
+    if (el) el.classList.add('link-source');
+    const svg = document.getElementById('edges-svg');
+    previewLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    previewLine.setAttribute('class', 'edge-preview');
+    previewLine.setAttribute('x1', node.x); previewLine.setAttribute('y1', node.y);
+    previewLine.setAttribute('x2', node.x); previewLine.setAttribute('y2', node.y);
+    svg.appendChild(previewLine);
+  } else {
+    if (linkSource.id === node.id) { cancelLink(); return; }
+    const exists = mapEdges.some(e =>
+      (e.from === linkSource.id && e.to === node.id) ||
+      (e.from === node.id && e.to === linkSource.id)
+    );
+    if (exists) { showToast('Ce lien existe déjà.'); cancelLink(); return; }
+    openLabelPopup(linkSource.id, node.id);
+    cancelLink();
+  }
+}
+
+// ===================== MOUSE EVENTS =====================
 canvasWrap.addEventListener('mousedown', e => {
   closeEdgeMenu();
   if (mapTool === 'pan' || spaceDown) {
@@ -1103,31 +1656,13 @@ function renderNodes() {
     el.innerHTML = `
       <button class="node-del-btn" title="Retirer de la carte" onclick="removeNode('${node.id}',event)">×</button>
       <div class="node-circle" style="background:${col.bg};color:${col.text}">${initials(c.nom)}</div>
-      <div class="node-label">${c.nom}</div>
-      <div class="node-role-label">${c.role || ''}</div>`;
+      <div class="node-label">${escHtml(c.nom)}</div>
+      <div class="node-role-label">${escHtml(c.role || '')}</div>`;
 
     el.addEventListener('click', e => {
       if (mapTool !== 'link') return;
       e.stopPropagation();
-      if (!linkSource) {
-        linkSource = node;
-        el.classList.add('link-source');
-        const svg = document.getElementById('edges-svg');
-        previewLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        previewLine.setAttribute('class', 'edge-preview');
-        previewLine.setAttribute('x1', node.x); previewLine.setAttribute('y1', node.y);
-        previewLine.setAttribute('x2', node.x); previewLine.setAttribute('y2', node.y);
-        svg.appendChild(previewLine);
-      } else {
-        if (linkSource.id === node.id) { cancelLink(); return; }
-        const exists = mapEdges.some(e =>
-          (e.from === linkSource.id && e.to === node.id) ||
-          (e.from === node.id && e.to === linkSource.id)
-        );
-        if (exists) { showToast('Ce lien existe déjà.'); cancelLink(); return; }
-        openLabelPopup(linkSource.id, node.id);
-        cancelLink();
-      }
+      handleLinkTap(node);
     });
 
     el.addEventListener('mousedown', e => {
@@ -1159,11 +1694,7 @@ function cancelLink() {
   document.querySelectorAll('.map-node.link-source').forEach(n => n.classList.remove('link-source'));
 }
 
-// ============================================================
-// RENDER EDGES — correction complète
-// La clé : hitarea transparent large pour capter les clics,
-// trait visible séparé, pointer-events sur le SVG activés.
-// ============================================================
+// ===================== EDGES =====================
 function renderEdges() {
   const svg = document.getElementById('edges-svg');
   svg.querySelectorAll('.edge-group').forEach(g => g.remove());
@@ -1184,7 +1715,6 @@ function renderEdges() {
     const cpx = mx - dy/len * off, cpy = my + dx/len * off;
     const pathD = `M${fn.x},${fn.y} Q${cpx},${cpy} ${tn.x},${tn.y}`;
 
-    // ── Zone de clic invisible large (18px) — capte les événements ──
     const hitarea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     hitarea.setAttribute('class', 'edge-hitarea');
     hitarea.setAttribute('d', pathD);
@@ -1194,39 +1724,31 @@ function renderEdges() {
       renderEdges();
     });
     hitarea.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault(); e.stopPropagation();
       selectedEdgeId = edge.id;
       renderEdges();
       openEdgeMenu(e.clientX, e.clientY, edge.id);
     });
     g.appendChild(hitarea);
 
-    // ── Trait visible ──
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('class', 'edge-line' + (selectedEdgeId === edge.id ? ' selected' : ''));
     path.setAttribute('d', pathD);
     g.appendChild(path);
 
-    // ── Badge SVG ──
     const icon = getLinkIcon(edge.label);
     const badgeText = edge.label || 'Lien';
     const hasLabel = !!edge.label;
     const textW = badgeText.length * 6.8 + 22;
-    // Espace supplémentaire à droite pour le bouton ✕ (18px)
     const bw = textW + 20 + 18;
     const bh = 22;
     const bx = cpx - bw / 2;
     const by = cpy - bh / 2;
 
-    // Fond de badge — clic pour modifier le type
     const badgeRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    badgeRect.setAttribute('x', bx);
-    badgeRect.setAttribute('y', by);
-    badgeRect.setAttribute('width', bw);
-    badgeRect.setAttribute('height', bh);
-    badgeRect.setAttribute('rx', 10);
-    badgeRect.setAttribute('ry', 10);
+    badgeRect.setAttribute('x', bx); badgeRect.setAttribute('y', by);
+    badgeRect.setAttribute('width', bw); badgeRect.setAttribute('height', bh);
+    badgeRect.setAttribute('rx', 10); badgeRect.setAttribute('ry', 10);
     badgeRect.setAttribute('fill', hasLabel ? '#1a1208' : 'rgba(26,18,8,0.5)');
     badgeRect.style.cursor = 'pointer';
     badgeRect.addEventListener('click', e => {
@@ -1236,60 +1758,42 @@ function renderEdges() {
     });
     g.appendChild(badgeRect);
 
-    // Icône emoji
     const iconEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    iconEl.setAttribute('x', bx + 10);
-    iconEl.setAttribute('y', cpy + 5);
-    iconEl.setAttribute('font-size', '11');
-    iconEl.setAttribute('dominant-baseline', 'middle');
-    iconEl.textContent = icon;
-    iconEl.style.pointerEvents = 'none';
+    iconEl.setAttribute('x', bx + 10); iconEl.setAttribute('y', cpy + 5);
+    iconEl.setAttribute('font-size', '11'); iconEl.setAttribute('dominant-baseline', 'middle');
+    iconEl.textContent = icon; iconEl.style.pointerEvents = 'none';
     g.appendChild(iconEl);
 
-    // Texte du label
     const labelEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    labelEl.setAttribute('x', bx + 26);
-    labelEl.setAttribute('y', cpy + 1);
+    labelEl.setAttribute('x', bx + 26); labelEl.setAttribute('y', cpy + 1);
     labelEl.setAttribute('fill', hasLabel ? '#f5f0e8' : 'rgba(245,240,232,0.7)');
-    labelEl.setAttribute('font-size', '11');
-    labelEl.setAttribute('font-family', 'Jost, sans-serif');
+    labelEl.setAttribute('font-size', '11'); labelEl.setAttribute('font-family', 'Jost, sans-serif');
     labelEl.setAttribute('dominant-baseline', 'middle');
     labelEl.setAttribute('font-style', hasLabel ? 'normal' : 'italic');
-    labelEl.textContent = badgeText;
-    labelEl.style.pointerEvents = 'none';
+    labelEl.textContent = badgeText; labelEl.style.pointerEvents = 'none';
     g.appendChild(labelEl);
 
-    // ── Bouton ✕ pour supprimer le lien ──
-    const xR = 8; // rayon du cercle
-    const xCx = bx + bw - 12; // centre X du cercle (coin droit du badge)
-    const xCy = cpy;           // centre Y
-
+    const xR = 8;
+    const xCx = bx + bw - 12;
+    const xCy = cpy;
     const xCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    xCircle.setAttribute('cx', xCx);
-    xCircle.setAttribute('cy', xCy);
-    xCircle.setAttribute('r', xR);
+    xCircle.setAttribute('cx', xCx); xCircle.setAttribute('cy', xCy); xCircle.setAttribute('r', xR);
     xCircle.setAttribute('fill', 'rgba(176,90,90,0.85)');
     xCircle.style.cursor = 'pointer';
     xCircle.addEventListener('click', e => {
       e.stopPropagation();
       mapEdges = mapEdges.filter(x => x.id !== edge.id);
       if (selectedEdgeId === edge.id) selectedEdgeId = null;
-      renderEdges();
-      showToast('Lien supprimé');
+      renderEdges(); showToast('Lien supprimé');
     });
     g.appendChild(xCircle);
 
     const xText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    xText.setAttribute('x', xCx);
-    xText.setAttribute('y', xCy + 1);
-    xText.setAttribute('text-anchor', 'middle');
-    xText.setAttribute('dominant-baseline', 'middle');
-    xText.setAttribute('fill', '#fff');
-    xText.setAttribute('font-size', '9');
-    xText.setAttribute('font-family', 'Jost, sans-serif');
-    xText.setAttribute('font-weight', '600');
-    xText.textContent = '✕';
-    xText.style.pointerEvents = 'none';
+    xText.setAttribute('x', xCx); xText.setAttribute('y', xCy + 1);
+    xText.setAttribute('text-anchor', 'middle'); xText.setAttribute('dominant-baseline', 'middle');
+    xText.setAttribute('fill', '#fff'); xText.setAttribute('font-size', '9');
+    xText.setAttribute('font-family', 'Jost, sans-serif'); xText.setAttribute('font-weight', '600');
+    xText.textContent = '✕'; xText.style.pointerEvents = 'none';
     g.appendChild(xText);
 
     svg.appendChild(g);
@@ -1299,8 +1803,7 @@ function renderEdges() {
 function openEdgeMenu(x, y, edgeId) {
   edgeMenuTargetId = edgeId;
   const menu = document.getElementById('edge-menu');
-  menu.style.left = x + 'px';
-  menu.style.top = y + 'px';
+  menu.style.left = x + 'px'; menu.style.top = y + 'px';
   menu.classList.add('open');
 }
 function closeEdgeMenu() { document.getElementById('edge-menu').classList.remove('open'); edgeMenuTargetId = null; }
@@ -1337,8 +1840,8 @@ function openLabelPopupEdit(edge) {
 function showLabelPopup() {
   const popup = document.getElementById('label-popup');
   const rect = canvasWrap.getBoundingClientRect();
-  popup.style.left = (rect.left + rect.width / 2 - 140) + 'px';
-  popup.style.top = (rect.top + rect.height / 2 - 80) + 'px';
+  popup.style.left = Math.max(8, rect.left + rect.width / 2 - 140) + 'px';
+  popup.style.top = Math.max(8, rect.top + rect.height / 2 - 80) + 'px';
   popup.classList.add('open');
   setTimeout(() => document.getElementById('label-input').focus(), 50);
 }
@@ -1362,6 +1865,7 @@ document.getElementById('label-input').addEventListener('keydown', e => {
   if (e.key === 'Escape') closeLabelPopup();
 });
 
+// ===================== GATE =====================
 function checkGate() {
   const pw = document.getElementById('gate-pw').value;
   if (pw === PASSWORD) { isEditor = true; enterApp(); }
@@ -1377,7 +1881,8 @@ function enterApp() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('subtitle').textContent = isEditor ? 'Mode édition' : 'Lecture seule';
   if (isEditor) document.getElementById('add-btn').style.display = 'inline-flex';
-  loadCharacters();
+  loadFolders();
+  loadCharacters().then(() => loadCharFolders()).then(() => renderGrid());
 }
 
 document.getElementById('gate-btn').addEventListener('click', checkGate);
