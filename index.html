@@ -1209,7 +1209,7 @@ function cancelLink() {
 }
 
 // ============================================================
-// RENDER EDGES — traits noirs + badges de type
+// RENDER EDGES — traits noirs + badges SVG natifs
 // ============================================================
 function renderEdges() {
   const svg = document.getElementById('edges-svg');
@@ -1224,14 +1224,14 @@ function renderEdges() {
     g.setAttribute('class', 'edge-group');
     g.dataset.edgeId = edge.id;
 
-    // Courbe quadratique légèrement arquée
+    // Point de contrôle pour la courbe
     const mx = (fn.x + tn.x) / 2, my = (fn.y + tn.y) / 2;
     const dx = tn.x - fn.x, dy = tn.y - fn.y;
     const len = Math.sqrt(dx*dx + dy*dy) || 1;
     const off = Math.min(len * 0.12, 35);
     const cpx = mx - dy/len * off, cpy = my + dx/len * off;
 
-    // Trait noir principal
+    // ── Trait noir ──
     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     path.setAttribute('class', 'edge-line' + (selectedEdgeId === edge.id ? ' selected' : ''));
     path.setAttribute('d', `M${fn.x},${fn.y} Q${cpx},${cpy} ${tn.x},${tn.y}`);
@@ -1243,32 +1243,56 @@ function renderEdges() {
     });
     g.appendChild(path);
 
-    // Badge de type — toujours visible (même sans label)
+    // ── Badge SVG natif (pas de foreignObject) ──
     const icon = getLinkIcon(edge.label);
-    const badgeText = edge.label || 'Lien';
+    const badgeText = (edge.label || 'Lien');
     const hasLabel = !!edge.label;
 
-    // Dimensions estimées du badge pour le centrage
-    const badgeW = Math.min(Math.max(badgeText.length * 7 + 36, 60), 160);
-    const badgeH = 24;
+    // Fond de la pastille
+    const padX = 10, padY = 5, r = 10;
+    // On estime la largeur du texte (icône ~14px + texte ~7px/char)
+    const textW = badgeText.length * 6.8 + 22;
+    const bw = textW + padX * 2;
+    const bh = 22;
+    const bx = cpx - bw / 2;
+    const by = cpy - bh / 2;
 
-    const fo = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
-    fo.setAttribute('x', cpx - badgeW / 2);
-    fo.setAttribute('y', cpy - badgeH / 2);
-    fo.setAttribute('width', badgeW);
-    fo.setAttribute('height', badgeH + 4);
-    fo.setAttribute('overflow', 'visible');
+    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    rect.setAttribute('x', bx);
+    rect.setAttribute('y', by);
+    rect.setAttribute('width', bw);
+    rect.setAttribute('height', bh);
+    rect.setAttribute('rx', r);
+    rect.setAttribute('ry', r);
+    rect.setAttribute('fill', hasLabel ? '#1a1208' : 'rgba(26,18,8,0.5)');
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('click', e => { e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
+    rect.addEventListener('contextmenu', e => { e.preventDefault(); e.stopPropagation(); openEdgeMenu(e.clientX, e.clientY, edge.id); });
+    g.appendChild(rect);
 
-    const badgeClass = 'edge-badge' + (hasLabel ? '' : ' no-label');
-    fo.innerHTML = `<div xmlns="http://www.w3.org/1999/xhtml"
-      class="${badgeClass}"
-      onclick="openEdgeMenu(event.clientX, event.clientY, '${edge.id}', event)"
-      style="width:${badgeW}px;">
-      <span class="badge-icon">${icon}</span>
-      <span>${badgeText}</span>
-    </div>`;
+    // Icône emoji
+    const iconEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    iconEl.setAttribute('x', bx + padX);
+    iconEl.setAttribute('y', cpy + 5);
+    iconEl.setAttribute('font-size', '11');
+    iconEl.setAttribute('dominant-baseline', 'middle');
+    iconEl.textContent = icon;
+    iconEl.style.pointerEvents = 'none';
+    g.appendChild(iconEl);
 
-    g.appendChild(fo);
+    // Texte du type
+    const labelEl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    labelEl.setAttribute('x', bx + padX + 16);
+    labelEl.setAttribute('y', cpy + 1);
+    labelEl.setAttribute('fill', hasLabel ? '#f5f0e8' : 'rgba(245,240,232,0.7)');
+    labelEl.setAttribute('font-size', '11');
+    labelEl.setAttribute('font-family', 'Jost, sans-serif');
+    labelEl.setAttribute('dominant-baseline', 'middle');
+    labelEl.setAttribute('font-style', hasLabel ? 'normal' : 'italic');
+    labelEl.textContent = badgeText;
+    labelEl.style.pointerEvents = 'none';
+    g.appendChild(labelEl);
+
     svg.appendChild(g);
   });
 }
