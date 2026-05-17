@@ -1133,7 +1133,7 @@ function renderAddFolderBtn(area) {
   btn.className = 'add-folder-btn';
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M12 11v6M9 14h6"/></svg> Créer un dossier`;
   btn.onclick = addFolder;
-  area.appendChild(btn);
+  area.insertBefore(btn, area.firstChild);
 }
 
 function escHtml(s) {
@@ -1231,36 +1231,34 @@ function renderForm(c, defaultFolderId) {
       onclick="selectColor(${i})" title="${col.label}"></div>`
   ).join('');
 
-  // Folder selector
+  // Folder selector HTML (labels only, values set safely below)
   let folderSel = '';
   if (isEditor && folders.length > 0) {
-    const selectedFolder = c ? (c.folder_id || '') : (defaultFolderId || '');
-    const opts = folders.map(f =>
-      `<option value="${f.id}" ${selectedFolder === f.id ? 'selected' : ''}>${escHtml(f.name)}</option>`
-    ).join('');
     folderSel = `
       <div class="form-row">
         <label>Dossier</label>
         <select id="f-folder">
-          <option value="">— Sans dossier —</option>${opts}
+          <option value="">— Sans dossier —</option>
+          ${folders.map(f => `<option value="${f.id}"></option>`).join('')}
         </select>
       </div>`;
   }
 
+  // Build modal HTML — NO user content goes into innerHTML (set via .value/.textContent below)
   document.getElementById('modal').innerHTML = `
     <button class="close-btn" onclick="closeModal()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
-    <div class="form-title">${c ? 'Modifier ' + escHtml(c.nom) : 'Nouveau personnage'}</div>
-    <div class="form-row"><label>Nom *</label><input id="f-nom" type="text" value="${c ? escHtml(c.nom) : ''}" placeholder="Ex : Éléonore"></div>
-    <div class="form-row"><label>Rôle</label><input id="f-role" type="text" value="${c ? escHtml(c.role || '') : ''}" placeholder="Ex : Protagoniste, Antagoniste…"></div>
+    <div class="form-title" id="f-title"></div>
+    <div class="form-row"><label>Nom *</label><input id="f-nom" type="text" placeholder="Ex : Éléonore"></div>
+    <div class="form-row"><label>Rôle</label><input id="f-role" type="text" placeholder="Ex : Protagoniste, Antagoniste…"></div>
     <span class="color-label">Couleur de la carte</span>
     <div class="color-picker" id="color-picker">${dots}</div>
     ${folderSel}
-    <div class="form-row"><label>Physique</label><textarea id="f-physique" placeholder="Apparence, traits distinctifs…">${c ? escHtml(c.physique || '') : ''}</textarea></div>
-    <div class="form-row"><label>Psychologie</label><textarea id="f-psycho" placeholder="Caractère, émotions, motivations…">${c ? escHtml(c.psychologie || '') : ''}</textarea></div>
-    <div class="form-row"><label>Liens avec d'autres personnages</label><textarea id="f-liens" placeholder="Relations, alliances, conflits…">${c ? escHtml(c.liens || '') : ''}</textarea></div>
-    <div class="form-row"><label>Histoire / Contexte</label><textarea id="f-histoire" placeholder="Passé, rôle dans l'histoire…">${c ? escHtml(c.histoire || '') : ''}</textarea></div>
+    <div class="form-row"><label>Physique</label><textarea id="f-physique" placeholder="Apparence, traits distinctifs…"></textarea></div>
+    <div class="form-row"><label>Psychologie</label><textarea id="f-psycho" placeholder="Caractère, émotions, motivations…"></textarea></div>
+    <div class="form-row"><label>Liens avec d'autres personnages</label><textarea id="f-liens" placeholder="Relations, alliances, conflits…"></textarea></div>
+    <div class="form-row"><label>Histoire / Contexte</label><textarea id="f-histoire" placeholder="Passé, rôle dans l'histoire…"></textarea></div>
     <div class="modal-actions">
       <button class="btn-primary" onclick="saveChar()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1268,6 +1266,27 @@ function renderForm(c, defaultFolderId) {
       </button>
       <button class="btn-secondary" onclick="closeModal()">Annuler</button>
     </div>`;
+
+  // Set values safely via JS (no HTML injection, handles apostrophes, quotes, etc.)
+  document.getElementById('f-title').textContent = c ? 'Modifier ' + c.nom : 'Nouveau personnage';
+  document.getElementById('f-nom').value = c ? (c.nom || '') : '';
+  document.getElementById('f-role').value = c ? (c.role || '') : '';
+  document.getElementById('f-physique').value = c ? (c.physique || '') : '';
+  document.getElementById('f-psycho').value = c ? (c.psychologie || '') : '';
+  document.getElementById('f-liens').value = c ? (c.liens || '') : '';
+  document.getElementById('f-histoire').value = c ? (c.histoire || '') : '';
+
+  // Set folder option labels and selected value
+  if (isEditor && folders.length > 0) {
+    const sel = document.getElementById('f-folder');
+    const selectedFolder = c ? (c.folder_id || '') : (defaultFolderId || '');
+    // Set option text safely
+    folders.forEach((f, i) => {
+      sel.options[i + 1].textContent = f.name; // index +1 because first is "Sans dossier"
+    });
+    sel.value = selectedFolder;
+  }
+
   document.getElementById('overlay').classList.add('open');
 }
 
