@@ -545,11 +545,6 @@ async function saveChar(id) {
 async function deleteChar(id) {
   if (!confirm('Supprimer ce personnage définitivement ?')) return;
   await api(`personnages?id=eq.${id}`, 'DELETE');
-  closeModal();
-  await loadCharacters();
-  showToast('Personnage supprimé');
-}
-  });
   characters = characters.filter(c => c.id !== id);
   closeModal();
   renderGrid();
