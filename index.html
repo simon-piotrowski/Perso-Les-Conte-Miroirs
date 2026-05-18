@@ -228,6 +228,13 @@ header {
 .card-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; color: var(--text); line-height: 1.2; }
 .card-role { font-size: 10.5px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 500; }
 
+/* Card folder badge */
+.card-folder-badge {
+  font-size: 10px; color: var(--accent); background: var(--accent-light);
+  border-radius: 99px; padding: 2px 8px; display: inline-block;
+  font-weight: 500; letter-spacing: 0.04em; margin-top: auto;
+}
+
 .add-card {
   background: transparent; border: 1.5px dashed var(--border2);
   border-radius: var(--radius); min-height: 155px;
@@ -364,6 +371,7 @@ header {
 .tool-sep { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
 .zoom-display { font-size: 12px; color: var(--text3); min-width: 38px; text-align: center; font-weight: 300; }
 
+/* Mobile map header — tools row */
 @media (max-width: 640px) {
   .tool-btn .tool-label { display: none; }
   .tool-btn { padding: 8px 10px; }
@@ -373,11 +381,13 @@ header {
 
 #map-body { flex: 1; display: flex; overflow: hidden; }
 
+/* Mobile: sidebar becomes bottom drawer */
 #map-sidebar {
   width: 220px; flex-shrink: 0; background: var(--surface);
   border-right: 1px solid var(--border2); display: flex; flex-direction: column; overflow: hidden;
 }
 
+/* Sidebar search */
 .sidebar-search-wrap { position: relative; padding: 0 0.75rem 0.5rem; }
 .sidebar-search-wrap svg { position: absolute; left: calc(0.75rem + 10px); top: 50%; transform: translateY(-50%); color: var(--text3); pointer-events: none; }
 #sidebar-search {
@@ -420,6 +430,7 @@ header {
 .sidebar-item .si-name { font-size: 13px; color: var(--text); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sidebar-item .si-role { font-size: 10px; color: var(--text3); }
 
+/* Mobile sidebar add button */
 .sidebar-add-btn {
   display: none; align-items: center; gap: 6px;
   padding: 6px 8px; border-radius: var(--radius-sm);
@@ -441,6 +452,7 @@ header {
 #map-canvas-wrap.linking { cursor: crosshair; }
 #map-world { position: absolute; top: 0; left: 0; transform-origin: 0 0; }
 
+/* Nodes */
 .map-node {
   position: absolute; transform: translate(-50%, -50%);
   display: flex; flex-direction: column; align-items: center; gap: 6px;
@@ -481,6 +493,7 @@ header {
 .map-node:hover .node-del-btn,
 .map-node.selected .node-del-btn { display: flex; }
 
+/* On mobile always show del button */
 @media (pointer: coarse) {
   .map-node .node-del-btn { display: flex; }
 }
@@ -545,6 +558,7 @@ header {
 }
 #map-instructions strong { color: var(--accent); font-weight: 500; }
 
+/* Edge context menu */
 #edge-menu {
   position: fixed; background: var(--surface);
   border: 1px solid var(--border2); border-radius: var(--radius-sm);
@@ -562,6 +576,7 @@ header {
 .edge-menu-item.danger { color: var(--danger); }
 .edge-menu-item.danger:hover { background: var(--danger-light); }
 
+/* Label popup */
 #label-popup {
   position: fixed; background: var(--surface);
   border: 1px solid var(--border2); border-radius: var(--radius-sm);
@@ -603,15 +618,21 @@ header {
     box-shadow: 0 -6px 30px rgba(100,70,30,0.12);
   }
   #map-sidebar.mobile-open { transform: translateY(0); }
+
   #map-sidebar-title { padding-top: 1.2rem; }
   #map-sidebar-title::before {
     content: ''; display: block; width: 36px; height: 4px;
     background: var(--border2); border-radius: 2px;
     margin: 0 auto 0.75rem;
   }
+
   #map-body { position: relative; }
+
   .sidebar-add-btn { display: flex; }
+
   #map-instructions { display: none; }
+
+  /* Mobile floating button to open sidebar */
   #mobile-sidebar-fab {
     display: flex; position: absolute; bottom: 1rem; left: 1rem;
     z-index: 55;
@@ -748,7 +769,7 @@ header {
   </div>
   <div id="map-body">
     <div id="map-sidebar">
-      <div id="map-sidebar-title">Voici tous les incroyabes personnages de ton incroyaaaaaable livre ❤️</div>
+      <div id="map-sidebar-title">Personnages ❤️</div>
       <div id="map-sidebar-hint">Glissez (ou touchez) un perso pour l'ajouter.</div>
       <div class="sidebar-search-wrap">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -774,6 +795,7 @@ header {
         <strong>Molette</strong> — zoom · <strong>Espace</strong> — naviguer
       </div>
     </div>
+    <!-- Mobile FAB to open sidebar drawer -->
     <button id="mobile-sidebar-fab" onclick="toggleMobileSidebar()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
       Personnages
@@ -816,7 +838,6 @@ header {
 <div id="toast"></div>
 
 <script>
-// ===================== CONFIG =====================
 const SUPABASE_URL = 'https://mddaurbgpodxdysemvnc.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1kZGF1cmJncG9keGR5c2Vtdm5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg5NTM1MzMsImV4cCI6MjA5NDUyOTUzM30.DhBLw9SXbO-vWw-_PVwHlpiIxGY5-DcDhihXDtfqFn4';
 const PASSWORD = 'lescontesmiroirs';
@@ -848,16 +869,15 @@ function getLinkIcon(label) {
   return '•';
 }
 
-// ===================== STATE =====================
 let characters = [];
 let isEditor = false;
 let currentEditColor = 0;
-let currentEditId = null;
+let currentEditId = null; // Store current edit ID separately (fix for edit bug)
 
-// Folders — now stored in Supabase
-let folders = [];
+// Folders
+let folders = []; // [{ id, name, collapsed }]
 
-// Map state — stored in Supabase
+// Map state
 let mapNodes = [], mapEdges = [];
 let mapTool = 'select';
 let viewX = 0, viewY = 0, viewScale = 1;
@@ -867,13 +887,10 @@ let draggingNode = null, dragOffX = 0, dragOffY = 0;
 let linkSource = null, previewLine = null;
 let selectedEdgeId = null, edgeMenuTargetId = null;
 let pendingEdgeFrom = null, pendingEdgeTo = null, editingEdgeId = null;
-let touchState = null;
 
-// Polling for real-time sync
-let pollInterval = null;
-const POLL_MS = 8000; // poll every 8 seconds
+// Touch state for map
+let touchState = null; // null | { type: 'pan'|'pinch', ... }
 
-// ===================== UTILS =====================
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -883,17 +900,6 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
 }
 
-function genId() { return Math.random().toString(36).slice(2, 10); }
-
-function escHtml(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function initials(name) {
-  return String(name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-}
-
-// ===================== API =====================
 function api(path, method = 'GET', body = null) {
   const opts = {
     method,
@@ -901,146 +907,53 @@ function api(path, method = 'GET', body = null) {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer ' + SUPABASE_KEY,
       'Content-Type': 'application/json',
-      'Prefer': method === 'POST' ? 'return=representation' : (method === 'PATCH' ? 'return=representation' : '')
+      'Prefer': method === 'POST' ? 'return=representation' : ''
     }
   };
   if (body) opts.body = JSON.stringify(body);
-  return fetch(SUPABASE_URL + '/rest/v1/' + path, opts).then(r => {
-    if (!r.ok && method !== 'DELETE') return r.json().then(e => { throw e; });
-    if (method === 'DELETE') return null;
-    return r.json();
-  });
+  return fetch(SUPABASE_URL + '/rest/v1/' + path, opts).then(r => r.json());
 }
 
-// ===================== LOAD / SAVE — SUPABASE =====================
-
-// Characters
 async function loadCharacters() {
   const data = await api('personnages?order=created_at.asc');
   characters = Array.isArray(data) ? data : [];
+  renderGrid();
+  renderSidebar();
 }
 
-// Folders & char folders — stored as a single JSON blob in a "meta" table
-// Table: app_meta (key text PK, value text)
-// We use key='folders' for folder list and key='char_folders' for charId->folderId map
-// and key='map_data' for the map
-
-async function loadMeta(key) {
-  try {
-    const data = await api(`app_meta?key=eq.${encodeURIComponent(key)}&select=value`);
-    if (Array.isArray(data) && data[0]) return JSON.parse(data[0].value);
-  } catch(e) {}
-  return null;
-}
-
-async function saveMeta(key, value) {
-  const val = JSON.stringify(value);
-  try {
-    // Upsert
-    await api('app_meta', 'POST', { key, value: val });
-  } catch(e) {
-    // Try PATCH if exists
-    try {
-      await api(`app_meta?key=eq.${encodeURIComponent(key)}`, 'PATCH', { value: val });
-    } catch(e2) {}
-  }
-}
-
-// Smarter upsert using Prefer: resolution=merge-duplicates
-async function upsertMeta(key, value) {
-  const val = JSON.stringify(value);
-  const opts = {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': 'Bearer ' + SUPABASE_KEY,
-      'Content-Type': 'application/json',
-      'Prefer': 'resolution=merge-duplicates,return=minimal'
-    },
-    body: JSON.stringify({ key, value: val })
-  };
-  await fetch(SUPABASE_URL + '/rest/v1/app_meta', opts);
-}
-
-async function loadFolders() {
-  const data = await loadMeta('folders');
-  folders = Array.isArray(data) ? data : [];
-}
-
-async function saveFolders() {
-  await upsertMeta('folders', folders);
-}
-
-function getCharFolderMap() {
-  const map = {};
-  characters.forEach(c => { if (c.folder_id) map[c.id] = c.folder_id; });
-  return map;
-}
-
-async function loadCharFolders() {
-  const map = await loadMeta('char_folders');
-  if (map && typeof map === 'object') {
-    characters.forEach(c => { c.folder_id = map[c.id] || null; });
-  }
-}
-
-async function saveCharFolders() {
-  await upsertMeta('char_folders', getCharFolderMap());
-}
-
-// Map data
-async function loadMapData() {
-  const data = await loadMeta('map_data');
-  if (data && typeof data === 'object') {
-    mapNodes = data.nodes || [];
-    mapEdges = data.edges || [];
-  } else {
-    mapNodes = []; mapEdges = [];
-  }
-}
-
-async function saveMap() {
-  await upsertMeta('map_data', { nodes: mapNodes, edges: mapEdges });
-  showToast('✓ Carte sauvegardée');
-}
-
-// ===================== POLLING FOR SYNC =====================
-async function pollSync() {
-  try {
-    const prevCount = characters.length;
-    await loadCharacters();
-    await loadCharFolders();
-    // Check folder updates
-    const prevFolderJson = JSON.stringify(folders);
-    await loadFolders();
-    const changed = characters.length !== prevCount || JSON.stringify(folders) !== prevFolderJson;
-    if (changed) renderGrid();
-    renderSidebar();
-  } catch(e) {}
-}
-
-function startPolling() {
-  if (pollInterval) clearInterval(pollInterval);
-  pollInterval = setInterval(pollSync, POLL_MS);
+function initials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
 }
 
 // ===================== FOLDERS =====================
+function loadFolders() {
+  try {
+    const raw = localStorage.getItem('roman_folders_v1');
+    if (raw) folders = JSON.parse(raw);
+    else folders = [];
+  } catch(e) { folders = []; }
+}
+
+function saveFolders() {
+  localStorage.setItem('roman_folders_v1', JSON.stringify(folders));
+}
+
+function genId() { return Math.random().toString(36).slice(2, 10); }
 
 function addFolder() {
   const id = genId();
   folders.push({ id, name: 'Nouveau dossier', collapsed: false });
   saveFolders();
   renderGrid();
+  // Auto-focus the rename on the new folder
   setTimeout(() => startRenameFolder(id), 50);
 }
 
-// FIX: use keydown-only approach, no blur-triggered save during typing
 function startRenameFolder(id) {
   const folder = folders.find(f => f.id === id);
   if (!folder) return;
   const el = document.querySelector(`.folder-name-display[data-folder-id="${id}"]`);
   if (!el) return;
-
   const input = document.createElement('input');
   input.type = 'text';
   input.className = 'folder-name-input';
@@ -1048,43 +961,21 @@ function startRenameFolder(id) {
   el.replaceWith(input);
   input.focus();
   input.select();
-
-  let committed = false;
-
-  const commit = () => {
-    if (committed) return;
-    committed = true;
+  let saved = false;
+  const finish = () => {
+    if (saved) return;
+    saved = true;
     folder.name = input.value.trim() || 'Dossier sans nom';
     saveFolders();
     renderGrid();
   };
-
-  const cancel = () => {
-    if (committed) return;
-    committed = true;
-    renderGrid(); // just re-render without saving
-  };
-
-  // FIX: Only Enter confirms, Escape cancels — blur alone does NOT trigger save
+  // Enter = save, Escape = cancel, other keys = type normally (stopPropagation blocks global shortcuts)
   input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      commit();
-    } else if (e.key === 'Escape') {
-      e.preventDefault();
-      cancel();
-    }
-    // All other keys: let them type normally
+    e.stopPropagation();
+    if (e.key === 'Enter') { e.preventDefault(); finish(); }
+    else if (e.key === 'Escape') { saved = true; renderGrid(); }
   });
-
-  // Blur only commits if user clicks outside (not on a key press)
-  // We track if a key caused the blur to avoid double-firing
-  input.addEventListener('blur', () => {
-    // Small timeout so keydown fires first if blur was caused by Enter/Escape
-    setTimeout(() => {
-      if (!committed) commit();
-    }, 80);
-  });
+  input.addEventListener('blur', finish);
 }
 
 function toggleFolder(id) {
@@ -1093,10 +984,10 @@ function toggleFolder(id) {
 }
 
 function deleteFolder(id) {
+  // Move characters in this folder to ungrouped
   characters.forEach(c => { if (c.folder_id === id) c.folder_id = null; });
   folders = folders.filter(f => f.id !== id);
   saveFolders();
-  saveCharFolders();
   renderGrid();
   showToast('Dossier supprimé');
 }
@@ -1104,8 +995,25 @@ function deleteFolder(id) {
 function setCharFolder(charId, folderId) {
   const c = characters.find(x => x.id === charId);
   if (c) c.folder_id = folderId || null;
+  // Persist folder assignment in localStorage since Supabase schema may not have this
   saveCharFolders();
   renderGrid();
+}
+
+function saveCharFolders() {
+  const map = {};
+  characters.forEach(c => { if (c.folder_id) map[c.id] = c.folder_id; });
+  localStorage.setItem('roman_char_folders_v1', JSON.stringify(map));
+}
+
+function loadCharFolders() {
+  try {
+    const raw = localStorage.getItem('roman_char_folders_v1');
+    if (raw) {
+      const map = JSON.parse(raw);
+      characters.forEach(c => { c.folder_id = map[c.id] || null; });
+    }
+  } catch(e) {}
 }
 
 // ===================== GRID =====================
@@ -1128,6 +1036,7 @@ function renderGrid() {
   }
 
   if (filter) {
+    // In search mode, flat list without folders
     if (filtered.length === 0) {
       area.innerHTML = `<div class="grid"><div class="empty"><p>Aucun résultat.</p></div></div>`;
     } else {
@@ -1139,7 +1048,7 @@ function renderGrid() {
     return;
   }
 
-  // Folders
+  // Render folders
   folders.forEach(folder => {
     const chars = characters.filter(c => c.folder_id === folder.id);
     const section = document.createElement('div');
@@ -1152,7 +1061,8 @@ function renderGrid() {
     toggle.className = 'folder-toggle' + (folder.collapsed ? ' collapsed' : '');
     toggle.innerHTML = `
       <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-      <span class="folder-name-display" data-folder-id="${folder.id}">${escHtml(folder.name)}</span>`;
+      <span class="folder-name-display" data-folder-id="${folder.id}">${escHtml(folder.name)}</span>
+    `;
     toggle.onclick = (e) => {
       if (e.target.closest('.folder-name-display')) return;
       toggleFolder(folder.id);
@@ -1192,6 +1102,7 @@ function renderGrid() {
       }
       section.appendChild(grid);
     }
+
     area.appendChild(section);
   });
 
@@ -1215,6 +1126,8 @@ function renderGrid() {
       grid.appendChild(addCard);
     }
     area.appendChild(grid);
+  } else if (isEditor && ungrouped.length === 0) {
+    // still show add btn
   }
 
   if (isEditor) renderAddFolderBtn(area);
@@ -1226,6 +1139,10 @@ function renderAddFolderBtn(area) {
   btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><path d="M12 11v6M9 14h6"/></svg> Créer un dossier`;
   btn.onclick = addFolder;
   area.insertBefore(btn, area.firstChild);
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function makeCard(c) {
@@ -1246,34 +1163,31 @@ function makeCard(c) {
 // ===================== CARD MODAL =====================
 function openCard(id) {
   const c = characters.find(x => x.id === id);
-  if (!c) return;
   const col = COLORS[c.couleur || 0];
   const field = (val) => val
     ? `<div class="section-content">${escHtml(val)}</div>`
     : `<div class="section-content empty-field">Non renseigné</div>`;
 
+  // Build folder selector HTML (no user data in onclick attributes)
   let folderSection = '';
   if (isEditor) {
-    const opts = folders.map(f =>
-      `<option value="${f.id}" ${c.folder_id === f.id ? 'selected' : ''}></option>`
-    ).join('');
     folderSection = `
       <div class="section">
         <div class="section-label">Dossier</div>
         <select id="card-folder-sel" style="background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:7px 12px;font-family:'Jost',sans-serif;font-size:13px;color:var(--text);width:100%;outline:none;">
           <option value="">— Sans dossier —</option>
-          ${opts}
+          ${folders.map(f => `<option value="${f.id}"></option>`).join('')}
         </select>
       </div>`;
   }
 
   const actions = isEditor ? `
     <div class="modal-actions">
-      <button class="btn-primary" onclick="openEditById('${c.id}')">
+      <button class="btn-primary" id="card-edit-btn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         Modifier
       </button>
-      <button class="btn-danger" onclick="deleteChar('${c.id}')">
+      <button class="btn-danger" id="card-delete-btn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
         Supprimer
       </button>
@@ -1285,7 +1199,7 @@ function openCard(id) {
     </button>
     <div class="modal-header">
       <div class="modal-avatar" style="background:${col.bg};color:${col.text}">${initials(c.nom)}</div>
-      <div><div class="modal-name">${escHtml(c.nom)}</div><div class="modal-role">${escHtml(c.role || '')}</div></div>
+      <div><div class="modal-name" id="card-nom"></div><div class="modal-role" id="card-role-label"></div></div>
     </div>
     <div class="section"><div class="section-label">Physique</div>${field(c.physique)}</div>
     <div class="section"><div class="section-label">Psychologie</div>${field(c.psychologie)}</div>
@@ -1294,25 +1208,36 @@ function openCard(id) {
     ${folderSection}
     ${actions}`;
 
-  // Set folder options text safely
-  if (isEditor && folders.length > 0) {
+  // Set text safely via JS
+  document.getElementById('card-nom').textContent = c.nom;
+  document.getElementById('card-role-label').textContent = c.role || '';
+
+  // Wire up buttons via JS (no ID in HTML attributes)
+  if (isEditor) {
+    document.getElementById('card-edit-btn').addEventListener('click', () => openEditById(c.id));
+    document.getElementById('card-delete-btn').addEventListener('click', () => deleteChar(c.id));
+    // Folder selector
     const sel = document.getElementById('card-folder-sel');
     folders.forEach((f, i) => { sel.options[i + 1].textContent = f.name; });
     sel.value = c.folder_id || '';
-    sel.onchange = () => setCharFolder(c.id, sel.value);
+    sel.addEventListener('change', () => setCharFolder(c.id, sel.value));
   }
 
   document.getElementById('overlay').classList.add('open');
 }
 
-// ===================== EDIT FORM =====================
+// ===================== EDIT FORM — BUG FIX =====================
+// Stocke l'ID dans une variable globale au lieu de l'injecter dans le HTML
 function openEditById(id) {
   const c = characters.find(x => x.id === id);
   if (!c) return;
   currentEditColor = c.couleur || 0;
-  currentEditId = c.id;
+  currentEditId = c.id; // <-- clé du fix : variable globale, pas dans le DOM
   renderForm(c);
 }
+
+// Alias pour compatibilité
+function openEdit(id) { openEditById(id); }
 
 function openAdd() { currentEditColor = 0; currentEditId = null; renderForm(null, null); }
 function openAddInFolder(folderId) { currentEditColor = 0; currentEditId = null; renderForm(null, folderId); }
@@ -1324,6 +1249,7 @@ function renderForm(c, defaultFolderId) {
       onclick="selectColor(${i})" title="${col.label}"></div>`
   ).join('');
 
+  // Folder selector HTML (labels only, values set safely below)
   let folderSel = '';
   if (isEditor && folders.length > 0) {
     folderSel = `
@@ -1336,6 +1262,7 @@ function renderForm(c, defaultFolderId) {
       </div>`;
   }
 
+  // Build modal HTML — NO user content goes into innerHTML (set via .value/.textContent below)
   document.getElementById('modal').innerHTML = `
     <button class="close-btn" onclick="closeModal()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -1358,7 +1285,7 @@ function renderForm(c, defaultFolderId) {
       <button class="btn-secondary" onclick="closeModal()">Annuler</button>
     </div>`;
 
-  // Set values safely via DOM properties
+  // Set values safely via JS (no HTML injection, handles apostrophes, quotes, etc.)
   document.getElementById('f-title').textContent = c ? 'Modifier ' + c.nom : 'Nouveau personnage';
   document.getElementById('f-nom').value = c ? (c.nom || '') : '';
   document.getElementById('f-role').value = c ? (c.role || '') : '';
@@ -1367,10 +1294,14 @@ function renderForm(c, defaultFolderId) {
   document.getElementById('f-liens').value = c ? (c.liens || '') : '';
   document.getElementById('f-histoire').value = c ? (c.histoire || '') : '';
 
+  // Set folder option labels and selected value
   if (isEditor && folders.length > 0) {
     const sel = document.getElementById('f-folder');
     const selectedFolder = c ? (c.folder_id || '') : (defaultFolderId || '');
-    folders.forEach((f, i) => { sel.options[i + 1].textContent = f.name; });
+    // Set option text safely
+    folders.forEach((f, i) => {
+      sel.options[i + 1].textContent = f.name; // index +1 because first is "Sans dossier"
+    });
     sel.value = selectedFolder;
   }
 
@@ -1385,17 +1316,14 @@ function selectColor(i) {
   });
 }
 
-// ===================== SAVE CHAR — FIX: immediate UI update =====================
+// ===================== SAVE CHAR — uses currentEditId global =====================
 async function saveChar() {
   const nom = document.getElementById('f-nom').value.trim();
   if (!nom) { showToast('⚠️ Le nom est requis.'); return; }
-
   const folderEl = document.getElementById('f-folder');
   const folderId = folderEl ? folderEl.value : null;
-
   const data = {
-    nom,
-    role: document.getElementById('f-role').value.trim(),
+    nom, role: document.getElementById('f-role').value.trim(),
     couleur: currentEditColor,
     physique: document.getElementById('f-physique').value.trim(),
     psychologie: document.getElementById('f-psycho').value.trim(),
@@ -1403,42 +1331,29 @@ async function saveChar() {
     histoire: document.getElementById('f-histoire').value.trim(),
   };
 
-  // FIX: Close modal immediately with a loading state feel
-  closeModal();
-
   if (currentEditId) {
-    // FIX: Update local state immediately so grid refreshes right away
+    await api(`personnages?id=eq.${currentEditId}`, 'PATCH', data);
     const idx = characters.findIndex(c => c.id === currentEditId);
     if (idx !== -1) {
       characters[idx] = { ...characters[idx], ...data };
       if (folderId !== null) characters[idx].folder_id = folderId || null;
     }
-    renderGrid();
-    renderSidebar();
+    saveCharFolders();
     showToast('✓ Personnage modifié');
-
-    // Then persist to Supabase in background
-    await api(`personnages?id=eq.${currentEditId}`, 'PATCH', data);
-    await saveCharFolders();
   } else {
-    showToast('⏳ Ajout en cours…');
     const result = await api('personnages', 'POST', data);
     if (Array.isArray(result) && result[0]) {
       const newChar = result[0];
       newChar.folder_id = folderId || null;
       characters.push(newChar);
-      await saveCharFolders();
+      saveCharFolders();
     } else {
-      // Fallback: reload from server
       await loadCharacters();
-      await loadCharFolders();
     }
-    renderGrid();
-    renderSidebar();
     showToast('✓ Personnage ajouté');
   }
-
   currentEditId = null;
+  closeModal(); renderGrid(); renderSidebar();
 }
 
 async function deleteChar(id) {
@@ -1447,37 +1362,47 @@ async function deleteChar(id) {
   const removedNodeIds = mapNodes.filter(n => n.charId === id).map(n => n.id);
   mapNodes = mapNodes.filter(n => n.charId !== id);
   mapEdges = mapEdges.filter(e => !removedNodeIds.includes(e.from) && !removedNodeIds.includes(e.to));
+  saveCharFolders();
   renderGrid();
   renderSidebar();
   if (document.getElementById('map-screen').classList.contains('open')) renderMapFull();
   showToast('Personnage supprimé');
   await api(`personnages?id=eq.${id}`, 'DELETE');
-  await saveCharFolders();
 }
 
-function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-  currentEditId = null;
-}
-function closeOverlay(e) {
-  if (e.target === document.getElementById('overlay')) closeModal();
-}
+function closeModal() { document.getElementById('overlay').classList.remove('open'); currentEditId = null; }
+function closeOverlay(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
 
 // ===================== MAP =====================
 async function openMap() {
   document.getElementById('map-screen').classList.add('open');
-  await loadMapData();
+  loadMapData();
   renderSidebar();
   renderMapFull();
   setTool('select');
 }
-
 function closeMap() {
   document.getElementById('map-screen').classList.remove('open');
+  // Close mobile drawer too
   document.getElementById('map-sidebar').classList.remove('mobile-open');
 }
 
-// ===================== SIDEBAR =====================
+function loadMapData() {
+  try {
+    const raw = localStorage.getItem('roman_map_v2');
+    if (raw) { const d = JSON.parse(raw); mapNodes = d.nodes || []; mapEdges = d.edges || []; }
+    else { mapNodes = []; mapEdges = []; }
+  } catch(e) { mapNodes = []; mapEdges = []; }
+}
+
+function saveMap() {
+  try {
+    localStorage.setItem('roman_map_v2', JSON.stringify({ nodes: mapNodes, edges: mapEdges }));
+    showToast('✓ Carte sauvegardée');
+  } catch(e) { showToast('⚠️ Erreur de sauvegarde'); }
+}
+
+// ===================== SIDEBAR (with search) =====================
 function renderSidebar() {
   const list = document.getElementById('sidebar-list');
   if (!list) return;
@@ -1503,6 +1428,7 @@ function renderSidebar() {
     if (!onMap) {
       item.draggable = true;
       item.addEventListener('dragstart', e => e.dataTransfer.setData('charId', c.id));
+      // Mobile: tap to add to map center
       item.addEventListener('click', () => addToMapCenter(c.id));
     }
     list.appendChild(item);
@@ -1513,18 +1439,21 @@ function renderSidebar() {
   }
 }
 
+// Add character to map center (mobile friendly)
 function addToMapCenter(charId) {
   if (mapNodes.some(n => n.charId === charId)) return;
   const wrap = document.getElementById('map-canvas-wrap');
   const rect = wrap.getBoundingClientRect();
   const cx = (rect.width / 2 - viewX) / viewScale;
   const cy = (rect.height / 2 - viewY) / viewScale;
+  // Add small random offset so they don't all stack
   const offsetX = (Math.random() - 0.5) * 120;
   const offsetY = (Math.random() - 0.5) * 80;
   mapNodes.push({ id: genId(), charId, x: cx + offsetX, y: cy + offsetY });
   renderSidebar();
   renderMapFull();
   showToast('✓ Personnage ajouté à la carte');
+  // Close drawer on mobile after adding
   if (window.innerWidth <= 700) {
     document.getElementById('map-sidebar').classList.remove('mobile-open');
   }
@@ -1579,31 +1508,43 @@ canvasWrap.addEventListener('wheel', e => {
   zoomBy(e.deltaY > 0 ? -0.1 : 0.1, e.clientX, e.clientY);
 }, { passive: false });
 
-// ===================== TOUCH SUPPORT =====================
+// ===================== TOUCH SUPPORT FOR MAP =====================
 canvasWrap.addEventListener('touchstart', e => {
   e.preventDefault();
   closeEdgeMenu();
   const touches = e.touches;
+
   if (touches.length === 1) {
     const t = touches[0];
     const rect = canvasWrap.getBoundingClientRect();
     const wx = (t.clientX - rect.left - viewX) / viewScale;
     const wy = (t.clientY - rect.top - viewY) / viewScale;
+
+    // Check if touching a node
     if (mapTool === 'select') {
       const node = findNodeAt(wx, wy);
-      if (node) { touchState = { type: 'node', node, startX: t.clientX, startY: t.clientY, origX: node.x, origY: node.y }; return; }
+      if (node) {
+        touchState = { type: 'node', node, startX: t.clientX, startY: t.clientY, origX: node.x, origY: node.y };
+        return;
+      }
     }
     if (mapTool === 'link') {
       const node = findNodeAt(wx, wy);
-      if (node) { handleLinkTap(node); return; }
+      if (node) {
+        handleLinkTap(node);
+        return;
+      }
     }
+    // Pan
     touchState = { type: 'pan', startX: t.clientX, startY: t.clientY, origViewX: viewX, origViewY: viewY };
   } else if (touches.length === 2) {
+    // Pinch zoom
     const dx = touches[1].clientX - touches[0].clientX;
     const dy = touches[1].clientY - touches[0].clientY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
     touchState = {
       type: 'pinch',
-      startDist: Math.sqrt(dx*dx + dy*dy),
+      startDist: dist,
       startScale: viewScale,
       centerX: (touches[0].clientX + touches[1].clientX) / 2,
       centerY: (touches[0].clientY + touches[1].clientY) / 2,
@@ -1617,6 +1558,7 @@ canvasWrap.addEventListener('touchmove', e => {
   e.preventDefault();
   if (!touchState) return;
   const touches = e.touches;
+
   if (touchState.type === 'pan' && touches.length === 1) {
     const t = touches[0];
     viewX = touchState.origViewX + (t.clientX - touchState.startX);
@@ -1629,8 +1571,10 @@ canvasWrap.addEventListener('touchmove', e => {
     const scale = Math.max(0.2, Math.min(3, touchState.startScale * (dist / touchState.startDist)));
     const ratio = scale / viewScale;
     const wrap = canvasWrap.getBoundingClientRect();
-    viewX = (touchState.centerX - wrap.left) - ((touchState.centerX - wrap.left) - viewX) * ratio;
-    viewY = (touchState.centerY - wrap.top) - ((touchState.centerY - wrap.top) - viewY) * ratio;
+    const ox = touchState.centerX - wrap.left;
+    const oy = touchState.centerY - wrap.top;
+    viewX = ox - (ox - viewX) * ratio;
+    viewY = oy - (oy - viewY) * ratio;
     viewScale = scale;
     applyTransform();
   } else if (touchState.type === 'node' && touches.length === 1) {
@@ -1644,7 +1588,10 @@ canvasWrap.addEventListener('touchmove', e => {
   }
 }, { passive: false });
 
-canvasWrap.addEventListener('touchend', () => { touchState = null; draggingNode = null; }, { passive: false });
+canvasWrap.addEventListener('touchend', e => {
+  touchState = null;
+  draggingNode = null;
+}, { passive: false });
 
 function findNodeAt(wx, wy) {
   return mapNodes.find(n => {
@@ -1808,7 +1755,11 @@ function renderEdges() {
     const hitarea = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     hitarea.setAttribute('class', 'edge-hitarea');
     hitarea.setAttribute('d', pathD);
-    hitarea.addEventListener('click', e => { e.stopPropagation(); selectedEdgeId = edge.id; renderEdges(); });
+    hitarea.addEventListener('click', e => {
+      e.stopPropagation();
+      selectedEdgeId = edge.id;
+      renderEdges();
+    });
     hitarea.addEventListener('contextmenu', e => {
       e.preventDefault(); e.stopPropagation();
       selectedEdgeId = edge.id;
@@ -1962,18 +1913,13 @@ function checkGate() {
   }
 }
 function enterReadOnly() { isEditor = false; enterApp(); }
-
-async function enterApp() {
+function enterApp() {
   document.getElementById('gate').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   document.getElementById('subtitle').textContent = isEditor ? 'Mode édition' : 'Lecture seule';
   if (isEditor) document.getElementById('add-btn').style.display = 'inline-flex';
-
-  await loadFolders();
-  await loadCharacters();
-  await loadCharFolders();
-  renderGrid();
-  startPolling();
+  loadFolders();
+  loadCharacters().then(() => loadCharFolders()).then(() => renderGrid());
 }
 
 document.getElementById('gate-btn').addEventListener('click', checkGate);
