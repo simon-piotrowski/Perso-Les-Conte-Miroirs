@@ -651,6 +651,37 @@ header {
 
 @keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
+/* ===================== DRAG & DROP GRID ===================== */
+.card.dragging { opacity: 0.4; transform: scale(0.97); box-shadow: none; }
+.card[draggable="true"] { cursor: grab; }
+.card[draggable="true"]:active { cursor: grabbing; }
+
+.folder-drop-zone {
+  border: 2px dashed transparent;
+  border-radius: var(--radius);
+  transition: border-color 0.15s, background 0.15s;
+  min-height: 4px;
+}
+.folder-drop-zone.drag-over {
+  border-color: var(--accent);
+  background: rgba(176,125,90,0.06);
+}
+.folder-header.drag-over-header {
+  background: rgba(176,125,90,0.08);
+  border-radius: var(--radius-sm);
+}
+.ungrouped-drop {
+  min-height: 8px;
+  border-radius: var(--radius);
+  border: 2px dashed transparent;
+  transition: border-color 0.15s, background 0.15s;
+  margin-bottom: 0.5rem;
+}
+.ungrouped-drop.drag-over {
+  border-color: var(--accent);
+  background: rgba(176,125,90,0.06);
+}
+
 /* ===================== RESPONSIVE ===================== */
 @media (max-width: 640px) {
   header { padding: 1.5rem 1rem 0; }
@@ -917,8 +948,7 @@ function api(path, method = 'GET', body = null) {
 async function loadCharacters() {
   const data = await api('personnages?order=created_at.asc');
   characters = Array.isArray(data) ? data : [];
-  renderGrid();
-  renderSidebar();
+  // NOTE: do NOT call renderGrid() here — caller must apply loadCharFolders() first
 }
 
 function initials(name) {
@@ -961,21 +991,35 @@ function startRenameFolder(id) {
   el.replaceWith(input);
   input.focus();
   input.select();
-  let saved = false;
-  const finish = () => {
-    if (saved) return;
-    saved = true;
+
+  // doneByKey: Enter or Escape was pressed — blur should not re-trigger save
+  let doneByKey = false;
+
+  input.addEventListener('keydown', e => {
+    // Block ALL global shortcuts while typing (Space, Ctrl+S, etc.)
+    e.stopPropagation();
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      doneByKey = true;
+      folder.name = input.value.trim() || 'Dossier sans nom';
+      saveFolders();
+      renderGrid();
+    } else if (e.key === 'Escape') {
+      e.preventDefault();
+      doneByKey = true;
+      renderGrid(); // cancel without saving
+    }
+    // All other keys (Space, letters, etc.) — just type, do nothing special
+  });
+
+  // blur = clicked elsewhere = save (but NOT if Enter/Escape already handled it)
+  input.addEventListener('blur', () => {
+    if (doneByKey) return;
+    doneByKey = true; // prevent any future blur calls
     folder.name = input.value.trim() || 'Dossier sans nom';
     saveFolders();
     renderGrid();
-  };
-  // Enter = save, Escape = cancel, other keys = type normally (stopPropagation blocks global shortcuts)
-  input.addEventListener('keydown', e => {
-    e.stopPropagation();
-    if (e.key === 'Enter') { e.preventDefault(); finish(); }
-    else if (e.key === 'Escape') { saved = true; renderGrid(); }
   });
-  input.addEventListener('blur', finish);
 }
 
 function toggleFolder(id) {
@@ -1056,6 +1100,15 @@ function renderGrid() {
 
     const header = document.createElement('div');
     header.className = 'folder-header';
+    // Folder header is also a drop target
+    header.addEventListener('dragover', e => { e.preventDefault(); header.classList.add('drag-over-header'); });
+    header.addEventListener('dragleave', () => header.classList.remove('drag-over-header'));
+    header.addEventListener('drop', e => {
+      e.preventDefault();
+      header.classList.remove('drag-over-header');
+      const charId = e.dataTransfer.getData('charId');
+      if (charId) { setCharFolder(charId, folder.id); showToast('✓ Personnage déplacé'); }
+    });
 
     const toggle = document.createElement('button');
     toggle.className = 'folder-toggle' + (folder.collapsed ? ' collapsed' : '');
@@ -1100,6 +1153,7 @@ function renderGrid() {
         addCard.onclick = () => openAddInFolder(folder.id);
         grid.appendChild(addCard);
       }
+      if (isEditor) grid.appendChild(makeFolderDropZone(folder.id));
       section.appendChild(grid);
     }
 
@@ -1114,6 +1168,20 @@ function renderGrid() {
       label.className = 'ungrouped-label';
       label.textContent = 'Sans dossier';
       area.appendChild(label);
+
+      // Drop zone for ungrouped (remove from folder)
+      const ugDrop = document.createElement('div');
+      ugDrop.className = 'ungrouped-drop';
+      ugDrop.title = 'Déposer ici pour retirer du dossier';
+      ugDrop.addEventListener('dragover', e => { e.preventDefault(); ugDrop.classList.add('drag-over'); });
+      ugDrop.addEventListener('dragleave', () => ugDrop.classList.remove('drag-over'));
+      ugDrop.addEventListener('drop', e => {
+        e.preventDefault();
+        ugDrop.classList.remove('drag-over');
+        const charId = e.dataTransfer.getData('charId');
+        if (charId) { setCharFolder(charId, null); showToast('✓ Retiré du dossier'); }
+      });
+      area.appendChild(ugDrop);
     }
     const grid = document.createElement('div');
     grid.className = 'grid';
@@ -1156,8 +1224,46 @@ function makeCard(c) {
       <div class="card-name">${escHtml(c.nom)}</div>
       <div class="card-role">${escHtml(c.role || '')}</div>
     </div>`;
-  card.onclick = () => openCard(c.id);
+
+  if (isEditor) {
+    card.draggable = true;
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('charId', c.id);
+      e.dataTransfer.effectAllowed = 'move';
+      setTimeout(() => card.classList.add('dragging'), 0);
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      document.querySelectorAll('.folder-drop-zone, .folder-header, .ungrouped-drop')
+        .forEach(el => el.classList.remove('drag-over', 'drag-over-header'));
+    });
+  }
+
+  // Click: only open if not a drag
+  let dragMoved = false;
+  card.addEventListener('mousedown', () => { dragMoved = false; });
+  card.addEventListener('mousemove', () => { dragMoved = true; });
+  card.addEventListener('click', () => { if (!dragMoved) openCard(c.id); });
+
   return card;
+}
+
+function makeFolderDropZone(folderId) {
+  const zone = document.createElement('div');
+  zone.className = 'folder-drop-zone';
+  zone.addEventListener('dragover', e => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    zone.classList.add('drag-over');
+  });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const charId = e.dataTransfer.getData('charId');
+    if (charId) { setCharFolder(charId, folderId); showToast('✓ Personnage déplacé'); }
+  });
+  return zone;
 }
 
 // ===================== CARD MODAL =====================
@@ -1919,7 +2025,7 @@ function enterApp() {
   document.getElementById('subtitle').textContent = isEditor ? 'Mode édition' : 'Lecture seule';
   if (isEditor) document.getElementById('add-btn').style.display = 'inline-flex';
   loadFolders();
-  loadCharacters().then(() => loadCharFolders()).then(() => renderGrid());
+  loadCharacters().then(() => { loadCharFolders(); renderGrid(); renderSidebar(); });
 }
 
 document.getElementById('gate-btn').addEventListener('click', checkGate);
