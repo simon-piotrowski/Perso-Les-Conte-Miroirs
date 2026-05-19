@@ -698,6 +698,7 @@ header {
   #toast { bottom: 1rem; white-space: normal; text-align: center; max-width: 85vw; }
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -2146,11 +2147,28 @@ async function enterApp() {
   document.getElementById('app').style.display = 'block';
   document.getElementById('subtitle').textContent = isEditor ? 'Mode édition' : 'Lecture seule';
   if (isEditor) document.getElementById('add-btn').style.display = 'inline-flex';
-  // Load everything from Supabase (synced)
+
   await loadFolders();
   await loadCharacters();
   renderGrid();
   renderSidebar();
+
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  sb.channel('personnages-sync')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'personnages' }, async () => {
+      await loadCharacters();
+      renderGrid();
+      renderSidebar();
+    })
+    .subscribe();
+
+  sb.channel('dossiers-sync')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'dossiers' }, async () => {
+      await loadFolders();
+      renderGrid();
+    })
+    .subscribe();
 }
 
 document.getElementById('gate-btn').addEventListener('click', checkGate);
